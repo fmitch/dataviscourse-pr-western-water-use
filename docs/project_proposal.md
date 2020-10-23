@@ -19,6 +19,8 @@ US County GEOJson data is available here: https://eric.clst.org/tech/usgeojson/
 
 
 ## Visualization Design
+![Design1](Design1.png)
+![Design2](Design2.png)
 
 ## Features
 #### Required Features
