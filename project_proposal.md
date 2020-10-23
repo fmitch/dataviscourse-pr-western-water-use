@@ -1,9 +1,68 @@
 # Project Proposal
 
-County precipitation/temperature data: ftp://ftp.ncdc.noaa.gov/pub/data/cirs/climdiv/
+#### Names, emails, and uIDs
 
-County FIPS codes: https://www.nrcs.usda.gov/wps/portal/nrcs/detail/national/home/?cid=nrcs143_013697
+## Background and Motivation
 
+## Project Objectives
+
+## Data and Processing
+The main data for our project comes from the USGS survey of water usage (https://waterdata.usgs.gov/ut/nwis/water_use/). This data is available for every county in the continental US every 5 years. In particular, the data for Utah is available from 1985-2015.
+
+However, this data has considerable problems in terms of consistency. Over 250 different data categories are defined for each county, but only a small fraction of these contain data. Over time, the reporting system for counties changed and measurements that were reported in one category were changed into another. 
+
+We will need to determine which categories should be combined, which data is not available for each county and should not be reported, and decide which of the categories are relevant for our visualization.
+
+Country precipitation and temperature data is available for every county in the continental US at ftp://ftp.ncdc.noaa.gov/pub/data/cirs/climdiv/. This data requires no cleanup.
+
+US County GEOJson data is available here: https://eric.clst.org/tech/usgeojson/
+
+
+## Visualization Design
+
+## Features
+#### Required Features
+* View 1
+  * Scatterplot of each county
+    * X axis (A)
+      * Population
+      * Precipitation
+      * Avg Temperature 
+    * Y axis (B)
+      * Water Use
+      * Domestic Water Use
+    * Slider to select year
+    * Color and Size channels?
+  * Map of Utah counties
+    * Colored by Y/X
+  * Buttons to select each county (since location may not be known on map)
+* View 2 - Bottom Right 
+  * Line Plot A
+    * Y axis is A from above
+    * X axis is time 
+  * Line Plot B
+    * Y axis is B from above
+    * X axis is time 
+* View 3 - Bottom Left
+  * Stacked bar charts of Water Use Categories for selection and state average
+* Linked view highlighting:
+  * Highlight county on map
+  * Highlight dot on scatterplot
+  * Highlight county lines in View 2
+  * Highlight year on all counties in View 2 (from slider)
+#### Optional Features
+* State View - 
+  * Select a different state to zoom to Views 1-3
+  * Select Multiple states to bring them all into Views 1-3
+
+## Project Schedule
+
+
+
+
+
+
+#### Scratch
 Utah Water Use 1985-2015: https://waterdata.usgs.gov/ut/nwis/water_use/ Other states are also available.
 
 Suggest: Map with multiple colorings selectable
