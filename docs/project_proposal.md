@@ -1,8 +1,16 @@
 # Project Proposal
 
 #### Names, emails, and uIDs
+Name: Pranav Kiran Shah, Email: shahpranavpks@gmail.com | U1266563@utah.edu, UID:U1266563
 
 ## Background and Motivation
+ *Consider any government website which provides data for Water usage; they never show visual statistics. This data is difficult to read by people. 
+ *Visualizing the water consumption against a different group of data can provide us insights into the country's condition.
+ *Water is an essential resource that keeps depleting, and hence, it needs to be analyzed by not just the government but also the local people.
+ *Knowing how much water is consumed every year and comparing it with other facts can help devise a solution to various climate change problems.
+ *Example: Comparing water usage with temperature can help us know how global warming is affecting consumption and precipitation. By knowing and understanding the data carefully, we can prevent another global crisis.
+ *Therefore, this project's motivation is to spread information in a visual form that is readable and understandable by the general public.
+
 
 ## Project Objectives
 
