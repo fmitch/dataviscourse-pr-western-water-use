@@ -73,71 +73,20 @@ Having these three views allows the visualization to be flexible. A user can com
   * Select Multiple states to bring both states into all Views
 
 ## Project Schedule
-* Week 10 (Oct 25-31): Finalize working draft of desing, submit project proposal
-* Week 11 (Nov 1-7): Setup state view and time view with changable variables, apply feedback
-* Week 12 (Nov 8-14): Add focus view and linked highlighting
-* Week 13 (Nov 15-21): Incorporate mentor feedback, finalize visual choices (color, layout, etc)
-* Week 14 (Nov 22-28): Add US view with multiple states, water category descriptions
-* Week 15 (Nov 29): Add interesting data preset, submit project
-
-
-#### Scratch
-Utah Water Use 1985-2015: https://waterdata.usgs.gov/ut/nwis/water_use/ Other states are also available.
-
-Suggest: Map with multiple colorings selectable
-* Annual precipitation
-* Water consumption
-  * Domestic consumption
-  * Domestic consumption per capita
-  * Industrial consumption
-  * Agriculture/Irrigation consumption
-* Ability to set any variable over any other variable. (Precipitation per capita, Domestic consumption per precipitation
-* Ability to select multiple counties and add their stats (Select Salt Lake + Utah + Summit + Wasatch, etc
-  * Have pre-setting for drainage areas? Hard, but roughly doable.
-  * Have pre-setting for state selection.
-  * Group selection option based on currect selection of counties
-
-On side of map, scatter plots of different axes, similar to HW4
-Slider to select multiple years?
-
-Full Data Categories:
- * Total population
- * Public
-   * Public Supply population served
-   * Public Supply self supplied groundwater withdrawals, fresh, Mgal/d
-   * Public Supply self supplied surface-water withdrawals, fresh, Mgal/d
-   * Public Supply self supplied total withdrawals, fresh, Mgal/d
- * Domestic
-   * Domestic self-supplied groundwater withdrawals, fresh, Mgal/d
-   * Domestic self-supplied surface-water withdrawals, fresh, Mgal/d
-   * Domestic self-supplied total withdrawals, fresh, Mgal/d
-   * Domestic self-supplied population
-   * Domestic per capita use, self-supplied in gal/person/day
- * Industrial
-   * Industrial self-supplied groundwater withdrawals, fresh, Mgal/d
-   * Industrial self-supplied groundwater withdrawals, saline, Mgal/d
-   * Industrial self-supplied surface-water withdrawals, fresh, Mgal/d
-   * Industrial self-supplied surface-water withdrawals, saline, Mgal/d
-   * Industrial totals (derived from prev 4)
- * Total Thermoelectric power
-   * Total Thermoelectric power self-supplied groundwater withdrawals, fresh, Mgal/d
-   * Total Thermoelectric power self-supplied groundwater withdrawals, saline, Mgal/d
-   * Total Thermoelectric power self-supplied surface-water withdrawals, fresh, Mgal/d
-   * Total Thermoelectric power self-supplied surface-water withdrawals, saline, Mgal/d
-   * Total Thermoelectric power totals (derived from prev 4)
- * Mining 
-   * Mining self-supplied groundwater withdrawals, fresh, Mgal/d
-   * Mining self-supplied groundwater withdrawals, saline, Mgal/d
-   * Mining self-supplied surface-water withdrawals, fresh, Mgal/d
-   * Mining self-supplied surface-water withdrawals, saline, Mgal/d
-   * Mining totals (derived from prev 4)
- * Livestock
-   * Livestock self-supplied groundwater withdrawals, fresh, Mgal/d
-   * Livestock self-supplied surface-water withdrawals, fresh, Mgal/d
-   * Livestock totals (derived from prev 4)
-   * (Need to combine Livestock and Livestock(stock), livestock(Animal Specialties) , see)
- * Irrigation
-   * Irrigation Total self-supplied groundwater withdrawals, fresh, Mgal/d
-   * Irrigation Total self-supplied surface-water withdrawals, fresh, Mgal/d
-   * Irrigation Total sprinkler irrigation in thousand acres
-   * Irrigation Total surface irrigation in thousand acres
+* Week 10 (Oct 25-31): Finalize working draft of design, submit project proposal
+* Week 11 (Nov 1-7): 
+  * Prav: Setup US view. Clicking on a state should open a new page, printing state map/name. Setup hosting. 
+  * Frost: Draw state view with counties, including scatterplot. Setup data object, process data.
+* Week 12 (Nov 8-14): 
+  * Prav: Add line charts.
+  * Frost: Add point of focus view, buttons and map selection
+* Week 13 (Nov 15-21): 
+  * Incorporate mentor feedback. 
+  * Add linked highlighting and selection
+  * Finalize visual choices (color, layout, etc)
+* Week 14 (Nov 22-28): 
+  * Add US view with multiple states, 
+  * Add tooltip water category descriptions
+* Week 15 (Nov 29): 
+  * Add interesting data preset, 
+  * Submit project
