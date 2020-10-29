@@ -1,7 +1,7 @@
 # Project Proposal
 
-#### Names, emails, and uIDs
-Pranav Kiran Shah, shahpranavpks@gmail.com | U1266563@utah.edu, UID:U1266563
+**Github:** https://github.com/fmitch/dataviscourse-pr-western-water-use
+
 
 ## Background and Motivation
 Consider any government website which provides data for Water usage; in many cases, there is an overwhelming amount of information without any visual statistics or tools for interpretation. This data is difficult to read by people, since there are many complex factors such as different categories of water use, as well as different water needs in different climates. Visualizing water consumption against other variables can provide us insights into an area's condition. 
@@ -13,6 +13,7 @@ Although neither of us have a background in water conservation, this project was
 
 ## Project Objectives
 This visualization is intended to present data about water consumption so that the user can observe trends in water usage, and potentially find ways that local communities could improve. With this project, we are specifically trying to answer the following questions for any user:
+
 * How much water is consumed by a state or its counties?
 * How does a state/county compare to others in terms of water usage?
 * How does water usage vary as per the temperature and precipitation?
@@ -23,6 +24,7 @@ This visualization is intended to present data about water consumption so that t
 * Which county/state has unused abundant resources that can help others?
 
 Other objectives include:
+
 * Learning about maps in visualization.
 * Learning and understanding interactive and synchronized layout.
 * Building and hosting a website on github.
@@ -57,11 +59,12 @@ Color is used in several ways. First, to distinguish between data points on the 
 Having these three views allows the visualization to be flexible. A user can compare different variables in the scatter plot, as well as view how those variables have changed over time in the time view. The focus view can be used to compare different counties, or how one particular county's water use has changed. 
 
 Here is the current working desing of our visualization. See our Github repository for drafts of earlier designs.
-![Design3](Design3.png)
 
+![Design 3](Design3.png) 
 
 ## Features
 #### Required Features
+
 * Add US map to select state (Home page)
 * View 1
   * Scatterplot of each county
@@ -93,7 +96,9 @@ Here is the current working desing of our visualization. See our Github reposito
   * Highlight dot on scatterplot
   * Highlight county lines in View 2
   * Highlight year on all counties in View 2 (from slider)
+  
 #### Optional Features
+
 * Scatterplot size for different variables. See what works.
 * Hovering on water use categories shows description of category
 * Selection average shown in focus view.
