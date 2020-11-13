@@ -10,38 +10,16 @@ loadData().then(data => {
 
     console.log(data)
 
-    function updateCounty(countyID) {
-        console.log(countyID);
-        return;
-        that.activeCounty = countyID;
-
-        // TODO - your code goes here
-        if (countyID === null)
-        {
-            scatterPlot.clearHighlight();
-            countyMap.clearHighlight();
-            infoBox.clearHighlight();
-        }
-        else
-            scatterPlot.updateHighlightClick(countyID);
-            countyMap.updateHighlightClick(countyID);
-            infoBox.updateTextDescription(countyID);
-
-    }
-
     function updateAll() {
         let xValue = d3.select('#dropdown_x').select('.dropdown-content').select('select').node().value;
         let yValue = d3.select('#dropdown_y').select('.dropdown-content').select('select').node().value;
         //let cValue = d3.select('#dropdown_c').select('.dropdown-content').select('select').node().value;
-        console.log(data.settings.selectedCounties);
         scatterPlot.updatePlot(xValue, yValue, xValue);
         countyMap.updateMap();
-        focusLines.updatePlot();
-        if (data.settings.activeCounty !== null){
-            scatterPlot.updateHighlightClick()
-            countyMap.updateHighlightClick();
-            //infoBox.updateTextDescription()
-        }
+        focusLines.updateFocus();
+
+        scatterPlot.updateHighlightClick()
+        countyMap.updateHighlightClick();
     }
     // Creates the view objects
     //const infoBox = new InfoBox(data);
@@ -54,7 +32,7 @@ loadData().then(data => {
     scatterPlot.drawYearBar();
     scatterPlot.updatePlot("precip", "temp", "precip");
     focusLines.drawPlot();
-    focusLines.updatePlot();
+    focusLines.updateFocus();
 
 
     // here we load the map data

@@ -2,7 +2,7 @@
     display: grid;
     grid-template-columns: 100px repeat(3, 1fr);
     grid-gap: 10px;
-    grid-template-rows: 70px repeat(2, 1fr);
+    grid-template-rows: 70px repeat(2, 1fr) 70px;
   }
   
   .header {
@@ -47,5 +47,10 @@
   
   #line2 {
     grid-column: 4;
+    grid-row: 3;
+  }
+
+  #poi-legend {
+    grid-column: 1;
     grid-row: 3;
   }

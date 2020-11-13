@@ -2,6 +2,11 @@
     font-family: 'Roboto', sans-serif;
 }
 
+div.hidden {
+    display: none
+}
+
+
 
 /*Element Styling*/
 
@@ -10,8 +15,18 @@ circle {
     opacity: .8;
 }
 
+.line-path {
+    stroke-width: 3px;
+}
+
 circle.selected-region {
     stroke: #122f3d;
+}
+
+path.focus-county {
+    stroke-width: 5px;
+    stroke: #d63838;
+    opacity: 1;
 }
 
 path.selected-county {

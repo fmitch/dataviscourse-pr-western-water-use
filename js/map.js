@@ -71,6 +71,10 @@ class CountyMap {
                     }
                     that.updateAll();
                 })
+                .on('dblclick', d => {
+                    that.data.settings.focusCounty = state+(+d.properties.COUNTY);
+                    that.updateAll();
+                });
         }
         this.updateMap();
     }
@@ -95,29 +99,20 @@ class CountyMap {
     updateHighlightClick() {
         let counties = d3.select("#map-layer");
         counties.selectAll("path")
-            .classed("selected-county", false);
+            .classed("selected-county", false)
+            .classed("focus-county", false);
         for (let county of this.data.settings.selectedCounties)
         {
             counties.select("#"+county)
                 .classed("selected-county", true);
         }
+        let focus = d3.select(`#${this.data.settings.focusCounty}`)
+            .classed('focus-county', true)
     }
 
     /**
      * Clears all highlights
      */
     clearHighlight() {
-        // ******* TODO: PART 3 *******
-        // Clear the map of any colors/markers; You can do this with inline styling or by
-        // defining a class style in styles.css
-
-        // Hint: If you followed our suggestion of using classes to style
-        // the colors and markers for hosts/teams/winners, you can use
-        // d3 selection and .classed to set these classes off here.
-
-        //TODO - your code goes here
-        let counties = d3.select("#map-layer");
-        counties.select("#"+this.data.settings.activeCounty)
-            .classed("selected-county", false);
     }
 }
