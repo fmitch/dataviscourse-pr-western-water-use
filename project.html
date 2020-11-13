@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Visualization – Homework 4</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="grid.css" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <script src="https://d3js.org/d3.v5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.js"></script>
+    <script src="https://d3js.org/d3-geo-projection.v2.js"></script>
+    <script src="js/dataHandler.js" async></script>
+    <script src="js/info_box.js" async></script>
+    <script src="js/point_of_interest.js" async></script>
+    <script src="js/water_plot.js" async></script>
+    <script src="js/map.js" async></script>
+    <script src="js/script.js" async></script>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="header">
+            <h1>Utah Water Usage</h1>
+            <p class="info"></p>
+        </div>
+        <div id="us-map" class='view'>US Map</div>
+        <div id="map-buttons">Buttons</div>
+        <div id="county-map"></div>
+        <div id="scatter-plot" class='view'></div>
+        <div id="poi-line-div"></div>
+        <div id="line1">Line1</div>
+        <div id="comparison">Stacked Bars</div>
+        <div id="line2">Line2</div>
+    </div>
+</body>
+
+</html>
