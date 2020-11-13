@@ -153,7 +153,7 @@ path.hidden {
 
 .wrapper {
     width: 1600px;
-    margin: auto;
+    margin: 20px;
 }
 
 .view {
@@ -277,7 +277,7 @@ div.dropdown-wrapper {
 
 .slider {
     -webkit-appearance: none;
-    width: 500px;
+    width: 400px;
     height: 15px;
     border-radius: 5px;
     background: #d3d3d3;
@@ -294,7 +294,7 @@ div.dropdown-wrapper {
     width: 25px;
     height: 25px;
     border-radius: 50%;
-    background: #4CAF50;
+    background: #658eda;
     cursor: pointer;
 }
 
@@ -302,7 +302,7 @@ div.dropdown-wrapper {
     width: 25px;
     height: 25px;
     border-radius: 50%;
-    background: #D4E157;
+    background: #90a5eb;
     cursor: pointer;
 }
 

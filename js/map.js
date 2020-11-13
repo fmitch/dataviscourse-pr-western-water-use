@@ -38,12 +38,13 @@ class CountyMap {
     drawMap(divided_geoJSON) {
         //note that projection is global!
         let that = this;
+        let width =  500;
+        let height = 500;
         this.divided_geoJSON = divided_geoJSON;
-        let mapDiv = document.getElementById("map-chart");
-        let svg = d3.select("#map-chart").append("svg");
-        let width =  mapDiv.clientWidth;
-        let height = mapDiv.clientHeight;
-        svg.append("g").attr("id", "map-layer")
+        let mapDiv = document.getElementById("county-map");
+        let svg = d3.select("#county-map").append("svg")
+            .attr('viewBox', `0 0 ${width} ${height}`);
+        svg.append("g").attr("id", "map-layer");
 
         for (let state of this.data.states){
             let geoJSON = divided_geoJSON[state]

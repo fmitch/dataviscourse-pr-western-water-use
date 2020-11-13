@@ -27,7 +27,7 @@ class ScatterPlot {
     constructor(data, updateAll) {
 
         this.margin = { top: 20, right: 20, bottom: 60, left: 80 };
-        this.width = 600 - this.margin.left - this.margin.right;
+        this.width = 500 - this.margin.left - this.margin.right;
         this.height = 400 - this.margin.top - this.margin.bottom;
 
         this.data = data;
@@ -166,9 +166,9 @@ class ScatterPlot {
                     if (+county[i][circleSizeIndicator] < rMin)
                         rMin = +county[i][circleSizeIndicator];
                     let slope = +county[i][yIndicator]/+county[i][xIndicator];
-                    if (slope > colorMax)
+                    if (slope > colorMax && i == activeYear)
                         colorMax = slope;
-                    if (slope < colorMin)
+                    if (slope < colorMin && i == activeYear)
                         colorMin = slope;
                 }
                 let dataPoint = new DataPoint(county.name, county[activeYear][xIndicator], county[activeYear][yIndicator], countyID,  county[activeYear][circleSizeIndicator]);
@@ -353,7 +353,8 @@ class ScatterPlot {
 
         let yearSlider = d3.select('#activeYear-bar')
             .append('div').classed('slider-wrap', true)
-            .append('input').classed('slider', true)
+            .append('input')
+            .classed('slider', true)
             .attr('type', 'range')
             .attr('min', 1985)
             .attr('max', 2015)
