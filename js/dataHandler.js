@@ -55,7 +55,7 @@ async function loadData() {
         irrigation_self_supply: "Water usage for Irrigation, in Mgal/d",
         irrigation_acres: "Irrigated acres, in thousands",
     };
-
+    console.log(states);
     for (let state of states){
         data[state] = {};
         let usage = await loadFile(`data/${state}/water_use.tsv`, d3.tsv);
