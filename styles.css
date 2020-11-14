@@ -366,3 +366,21 @@ div.tooltip {
     font-size: 60px;
     opacity: .2;
 }
+
+#map-chart-usa {
+    height: 900px;
+    width : 100%;
+}
+
+
+#map-chart-usa svg {
+    width: 100%;
+    height: 100%;
+    margin: auto;
+}
+
+#map-chart-usa svg {
+    margin: auto;
+}
+
+
