@@ -84,7 +84,7 @@ Having these three views allows the visualization to be flexible. A user can com
 
 
 ## Evaluation:
-So far we were able to answer a few question with respect to water cnsumptiona nd its relation with other factors such as precipitation, temperature, etc. 
+So far we were able to answer a few question with respect to water consumption and its relation with other factors such as precipitation, temperature, etc. 
 
-We are still working on craeting different visuals such as additional line charts and stacked bar plots. These additional features will help understand and provide an informative visual of the data.
+We are still working on creating different visuals such as additional line charts and stacked bar plots. These additional features will help understand and provide an informative visual of the data.
 
