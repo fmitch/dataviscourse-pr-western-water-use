@@ -26,7 +26,7 @@ document.addEventListener("click", function (e) {
                 this.active_state = current_click;
                 this.states = [this.active_state.toLowerCase()];
                 // console.log(this.states);
-                var newwindow = window.open("project.html");
+                var newwindow = window.open("project.html",'popUpWindow');
                 newwindow.states = this.states;
                 } 
                 else {

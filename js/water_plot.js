@@ -198,6 +198,8 @@ class ScatterPlot {
         let minSize = rMin;
         let maxSize = rMax;
 
+        console.log("---------------------");
+        console.log(this.data.plotData[state]);
         for (let state of this.data.states){
             let circleGroup = d3.select("#points").selectAll("circle").data(Object.values(this.data.plotData[state]));
 

@@ -213,6 +213,16 @@ div.dropdown-wrapper {
     float: right;
 }
 
+div.dropdown-wrapper-line {
+    display: flexbox;
+    margin-left: 75px;
+    padding: 20px;
+}
+
+.dropdown-line {
+    float: right;
+}
+
 .y-label,
 .x-label,
 .c-label {

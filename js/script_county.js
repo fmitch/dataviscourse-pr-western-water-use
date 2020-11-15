@@ -24,18 +24,28 @@ loadData().then(data => {
         scatterPlot.updateHighlightClick()
         countyMap.updateHighlightClick();
     }
+
+    function updateAllLine() {
+        let yValue = d3.select('#dropdown_y-line').select('.dropdown-content').select('select').node().value;
+        //let cValue = d3.select('#dropdown_c').select('.dropdown-content').select('select').node().value;
+        line1.updatePlot(yValue);
+    }
     // Creates the view objects
     //const infoBox = new InfoBox(data);
     const countyMap = new CountyMap(data, updateAll);
     const scatterPlot = new ScatterPlot(data, updateAll);
     const focusLines = new FocusLines(data, updateAll);
-
-
+    const line1 = new LinePlot(data,updateAllLine);
+    
+    console.log("data line");
+    line1.drawPlot();
+    line1.updatePlot("precip");
     scatterPlot.drawPlot();
     scatterPlot.drawYearBar();
     scatterPlot.updatePlot("precip", "temp", "precip");
     focusLines.drawPlot();
     focusLines.updateFocus();
+
 
 
     // here we load the map data
