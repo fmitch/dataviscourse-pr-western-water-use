@@ -1,7 +1,8 @@
 # Project ProcessBook
 
 **Github:** https://github.com/fmitch/dataviscourse-pr-western-water-use
-**Github Pages (Hosted):** 
+
+**Github Pages (Hosted):** https://fmitch.github.io/dataviscourse-pr-western-water-use/
 
 
 ## Background and Motivation
@@ -52,6 +53,11 @@ We will need to determine which categories should be combined, which data is not
 
 Country precipitation and temperature data is available for every county in the continental US at ftp://ftp.ncdc.noaa.gov/pub/data/cirs/climdiv/. This data requires aggregation and processing to match the timeline of the water-use data. US County GEOJson data is available here: https://eric.clst.org/tech/usgeojson/
 
+## Exploratory Data Analysis:
+Intially, we used the USGS tabluar visualization to explore our Data. This helped us to search for various categories and check availability of data for counties. 
+
+We were able to draw a few insights such as total water consumption and it's different categories. This was sufficient to start working on creating designs for visuals. Based on availability of data in each category, we filtered the data and then designed visuals accordingly.
+
 
 ## Design Evolution
 
@@ -73,6 +79,11 @@ Having these three views allows the visualization to be flexible. A user can com
 Here is the current working desing of our visualization. See our Github repository for drafts of earlier designs.
 
 ![Design 3](Design3.png) 
+
+## Evaluation:
+So far we were able to answer a few question with respect to water cnsumptiona nd its relation with other factors such as precipitation, temperature, etc. 
+
+We are still working on craeting different visuals such as additional line charts and stacked bar plots. These additional features will help understand and provide an informative visual of the data.
 
 
 ## Features
