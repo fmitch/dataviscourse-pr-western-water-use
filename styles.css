@@ -15,6 +15,12 @@ circle {
     opacity: .8;
 }
 
+text.map-label {
+    font-size: x-small;
+    text-anchor: middle;
+    opacity: .8;
+}
+
 .line-path {
     stroke-width: 3px;
 }
@@ -23,22 +29,26 @@ circle.selected-region {
     stroke: #122f3d;
 }
 
-path.focus-county {
-    stroke-width: 5px;
-    stroke: #d63838;
-    opacity: 1;
-}
-
 path.selected-county {
     stroke-width: 5px;
     stroke: #000000;
     opacity: 1;
 }
 
+path.focus-county {
+    stroke-width: 5px;
+    stroke: #d63838;
+}
+
 circle.selected-county {
     stroke-width: 3px;
     stroke: #000000;
     opacity: 1;
+}
+
+circle.focus-county {
+    stroke-width: 3px;
+    stroke: #d63838;
 }
 
 circle.hidden {

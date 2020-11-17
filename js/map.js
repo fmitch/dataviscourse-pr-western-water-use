@@ -45,6 +45,7 @@ class CountyMap {
         let svg = d3.select("#county-map").append("svg")
             .attr('viewBox', `0 0 ${width} ${height}`);
         svg.append("g").attr("id", "map-layer");
+        svg.append("g").attr("id", "text-layer");
 
         for (let state of this.data.states){
             let geoJSON = divided_geoJSON[state]
@@ -53,7 +54,14 @@ class CountyMap {
                 .fitSize([width-10,height-10],geoJSON)
                 //.scale([500]);
             let path = d3.geoPath().projection(projection);
-            let counties = d3.select("#map-layer").selectAll("path")
+            d3.select("#text-layer").selectAll("text")
+                .data(geoJSON.features)
+                .join('text')
+                .classed('map-label', true)
+                .attr('x', d => projection(d3.geoCentroid(d))[0])
+                .attr('y', d => projection(d3.geoCentroid(d))[1])
+                .text(d => d.properties.NAME);
+            d3.select("#map-layer").selectAll("path")
                 .data(geoJSON.features)
                 .join("path")
                 .classed("boundary", true)
@@ -71,8 +79,12 @@ class CountyMap {
                     }
                     that.updateAll();
                 })
-                .on('dblclick', d => {
-                    that.data.settings.focusCounty = state+(+d.properties.COUNTY);
+                .on('contextmenu', d => {
+                    d3.event.preventDefault();
+                    if (that.data.settings.focusCounty == state+(+d.properties.COUNTY))
+                        that.data.settings.focusCounty = null;
+                    else
+                        that.data.settings.focusCounty = state+(+d.properties.COUNTY);
                     that.updateAll();
                 });
         }

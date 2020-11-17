@@ -1,7 +1,8 @@
 .wrapper {
     display: grid;
     grid-template-columns: 100px repeat(3, 1fr);
-    grid-gap: 10px;
+    row-gap: 30px;
+    column-gap: 10px;
     grid-template-rows: 70px repeat(2, 1fr) 70px;
   }
   
@@ -35,7 +36,7 @@
     grid-row: 3;
   }
   
-  #comparison {
+  #poi-bar-div {
     grid-column: 3;
     grid-row: 3;
   }
