@@ -4,7 +4,7 @@ class FocusLines {
     constructor(data) {
 
         this.margin = { top: 20, right: 20, bottom: 20, left: 50 };
-        this.width = 500 - this.margin.left - this.margin.right;
+        this.width = 450 - this.margin.left - this.margin.right;
         this.height = 400 - this.margin.top - this.margin.bottom;
 
         this.data = data;
@@ -42,9 +42,109 @@ class FocusLines {
         plot.append("g").classed("y-axis", true)
             .attr("id","poi-line-y-axis");
         plot.append("text").classed("poi-line-axis-label-y",true);
+        plot.append("text")
+            .attr('id', 'poi-county-title')
+            .attr("transform",`translate(${this.margin.left/2},${-this.margin.top/3})`)
+            .attr('text-anchor', 'center')
+            .text('');
         
         //let dropdownWrap = d3.select('#chart-view').append('div').classed('dropdown-wrapper', true);
         this.drawLegend();
+    }
+
+    drawBars() {
+        d3.select('#poi-bar-div')
+            .append('svg').classed('plot-svg', true)
+            .attr("width", this.width + this.margin.left + this.margin.right)
+            .attr("height", this.height + this.margin.top + this.margin.bottom);
+        let svgGroup = d3.select('#poi-bar-div').select('.plot-svg')
+            .append('g').classed('wrapper-group', true)
+            .attr('transform', `translate(${this.margin.left},${this.margin.top})`);
+        let plot = d3.select('#poi-bar-div').select('.wrapper-group')
+        plot.append('g').attr('id', 'poi-bars');
+        plot.append('g').classed('x-axis', true)
+            .attr("id","poi-bar-x-axis")
+            .attr("transform","translate(0,"+this.height+ ")");
+        plot.append("text").classed("poi-bar-axis-label-x",true);
+        // Add group for y-axis
+        plot.append("g").classed("y-axis", true)
+            .attr("id","poi-bar-y-axis");
+        plot.append("text").classed("poi-bar-axis-label-y",true);
+    }
+
+    updateBars() {
+        let selectedCounties = this.data.settings.selectedCounties.slice();
+        selectedCounties.sort((a,b) => +a.replace(/[A-z]/g, '') - +b.replace(/[A-z]/g, ''))
+        if (this.data.settings.focusCounty !== null)
+            selectedCounties.unshift(this.data.settings.focusCounty);
+        let activeYear = this.data.settings.activeYear;
+        let numCounties = this.data.settings.selectedCounties.length;
+
+        let barData = [];
+        let totalWater = {};
+        let maxWidth = 0;
+        for (let county of selectedCounties){
+            let countyWater = 0;
+            let currentState = county.replace(/[0-9]/g, '');
+            let currentCounty = +county.replace(/[A-z]/g, '');
+            let obj = this.data[currentState][currentCounty][activeYear];
+            for (let key of this.water_categories) {
+                barData.push({
+                    start: countyWater,
+                    value: obj[key], 
+                    category: key,
+                    county: county,
+                });
+                countyWater += obj[key];
+            }
+            maxWidth = countyWater > maxWidth ? countyWater : maxWidth;
+            totalWater[county] = countyWater;
+        }
+
+        let xScale = d3.scaleLinear().range([0,this.width]).domain([0,1]).nice();
+        let axisXLabel = d3.select('#poi-bars')
+            .select(".poi-bar-axis-label-x")
+            .text('Percentage of Water Used')
+            .style("text-anchor", "middle")
+            .attr("transform", "translate("+this.width/2+","+(this.height+35)+")");
+        let xAxis = d3.select("#poi-bar-x-axis").call(d3.axisBottom(xScale).tickValues([.1,.2,.3,.4,.5,.6,.7,.8,.9,1]).tickFormat(d3.format('.0%')));
+
+        let yScale = d3.scaleLinear()
+            .range([0,this.height/Math.max(numCounties, 4)])
+            .domain([0,maxWidth]).nice();
+        let bandScale = d3.scaleBand()
+            .domain(selectedCounties)
+            .range([0, this.height])
+            .paddingInner(0.05)
+            .align(0.1);
+        d3.select('#poi-bar-div').select('.wrapper-group').select('.y-axis')
+            .attr("transform", `translate(0,${-bandScale.bandwidth()/2})`)
+            .call(d3.axisLeft(bandScale).tickFormat(x => {
+                let currentState = x.replace(/[0-9]/g, '');
+                let currentCounty = +x.replace(/[A-z]/g, '');
+                return this.data[currentState][currentCounty].name;
+            }));
+        
+        d3.select('#poi-bar-div').select('.wrapper-group').select('.y-axis').select('.domain').remove();
+
+        /*
+        axisYLabel.text('Million Gallons per day')
+            .style("text-anchor", "middle")
+            .attr("transform", "translate(-35,"+(this.height/2)+") rotate(-90)");
+        let yAxis = d3.select("#poi-bar-y-axis").call(d3.axisLeft(yScale));
+        */
+
+        let rectGroup = d3.select('#poi-bars').selectAll('rect').data(barData);
+        rectGroup.join('rect')
+            .attr('x', d => xScale(d.start/totalWater[d.county]))
+            .attr('y', d => bandScale(d.county))
+            .attr('height', d => yScale(totalWater[d.county]))
+            .attr('width', d => xScale(d.value/totalWater[d.county]))
+            .attr('fill', d => this.colorScale(d.category))
+            .transition()
+            .duration(this.data.transitionDuration);
+        rectGroup.exit().remove();
+
     }
 
     /**
@@ -54,9 +154,13 @@ class FocusLines {
         let activeYear = this.data.settings.activeYear;
         // Ideally we'll have a separate focusCounty, right now I'm using the first
         let county = this.data.settings.focusCounty;
-        if (county === undefined)
+        if (county === null)
         {
-            this.showLegend(false);
+            if (this.data.settings.selectedCounties.length > 0)
+                this.showLegend(true);
+            else
+                this.showLegend(false);
+            this.showLines(false);
             return;
         }
         let focusState = county.replace(/[0-9]/g, '');
@@ -100,7 +204,9 @@ class FocusLines {
         axisYLabel.text('Million Gallons per day')
             .style("text-anchor", "middle")
             .attr("transform", "translate(-35,"+(this.height/2)+") rotate(-90)");
-        let yAxis = d3.select("#poi-line-y-axis").call(d3.axisLeft(yScale));
+        
+        let yAxis = d3.select("#poi-line-y-axis");
+        yAxis.call(d3.axisLeft(yScale));
 
         let lineGen = d3.line()
                 .x(d => xScale(d.year))
@@ -118,7 +224,9 @@ class FocusLines {
             .duration(this.data.transitionDuration);
         lineGroup.exit().remove();
 
+        d3.select("#poi-county-title").text(this.data[focusState][focusCounty].name);
         this.showLegend(true);
+        this.showLines(true);
     }
 
     /**
@@ -141,6 +249,16 @@ class FocusLines {
 
     showLegend(shouldShow){
         let div = d3.select('#poi-legend')
+            .classed('hidden', !shouldShow);
+    }
+
+    showBars(shouldShow){
+        let div = d3.select('#poi-bar-div')
+            .classed('hidden', !shouldShow);
+    }
+
+    showLines(shouldShow){
+        let div = d3.select('#poi-line-div')
             .classed('hidden', !shouldShow);
     }
 }
