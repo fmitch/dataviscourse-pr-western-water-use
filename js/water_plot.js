@@ -418,7 +418,7 @@ class ScatterPlot {
      */
     updateHighlightClick() {
         let points = d3.select("#points");
-        if (this.data.settings.selectedCounties.length === 0)
+        if (this.data.settings.selectedCounties.length === 0 && this.data.settings.focusCounty === null)
         {
             points.selectAll("circle")
                 .classed("selected-county", false)
@@ -434,6 +434,13 @@ class ScatterPlot {
             points.select(`#${ county }`)
                 .classed("hidden",false)
                 .classed("selected-county", true);
+        }
+        points.selectAll('circle')
+            .classed('focus-county', false);
+        if (this.data.settings.focusCounty !== null){
+            points.select(`#${this.data.settings.focusCounty}`)
+                .classed('hidden', false)
+                .classed("focus-county", true);
         }
     }
 

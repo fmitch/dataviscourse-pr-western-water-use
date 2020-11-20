@@ -11,12 +11,15 @@ if(!window.states && (document. title == 'County')){
 console.log(document. title);
 let states = window.states;
 console.log(states);
+if (states === undefined)
+    states = ['utah'];
 
 loadData().then(data => {
     data.settings = {
         selectedCounties: [],
         activeYear: '2015',
-        years: [1985,1990,1995,2000,2005,2010,2015]
+        years: [1985,1990,1995,2000,2005,2010,2015],
+        focusCounty: null
     }
     data.states = states;
     let that = this;
@@ -29,6 +32,7 @@ loadData().then(data => {
         scatterPlot.updatePlot(xValue, yValue, xValue);
         countyMap.updateMap();
         focusLines.updateFocus();
+        focusLines.updateBars();
 
         scatterPlot.updateHighlightClick()
         countyMap.updateHighlightClick();
@@ -89,7 +93,9 @@ loadData().then(data => {
     scatterPlot.drawYearBar();
     scatterPlot.updatePlot("precip", "temp", "precip");
     focusLines.drawPlot();
+    focusLines.drawBars();
     focusLines.updateFocus();
+    focusLines.updateBars();
 
 
 
