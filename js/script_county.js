@@ -43,6 +43,11 @@ loadData().then(data => {
         //let cValue = d3.select('#dropdown_c').select('.dropdown-content').select('select').node().value;
         line1.updatePlot(yValue);
     }
+    function updateAllLine2() {
+        let yValue = d3.select('#dropdown_y-line2').select('.dropdown-content').select('select').node().value;
+        //let cValue = d3.select('#dropdown_c').select('.dropdown-content').select('select').node().value;
+        line2.updatePlot(yValue);
+    }
 
     function buttonclick(){
         let countyname = [];
@@ -85,10 +90,13 @@ loadData().then(data => {
     const scatterPlot = new ScatterPlot(data, updateAll);
     const focusLines = new FocusLines(data, updateAll);
     const line1 = new LinePlot(data,updateAllLine,buttonclick);
+    const line2 = new LinePlot2(data,updateAllLine2);
     
     console.log("data line");
     line1.drawPlot();
     line1.updatePlot("precip");
+    line2.drawPlot();
+    line2.updatePlot("precip");
     scatterPlot.drawPlot();
     scatterPlot.drawYearBar();
     scatterPlot.updatePlot("precip", "temp", "precip");

@@ -229,6 +229,12 @@ div.dropdown-wrapper-line {
     padding: 20px;
 }
 
+div.dropdown-wrapper-line2 {
+    display: flexbox;
+    margin-left: 75px;
+    padding: 20px;
+}
+
 .dropdown-line {
     float: right;
 }
