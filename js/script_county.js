@@ -1,5 +1,6 @@
 
 // ---------------------------------------------------------
+/*
 if(!window.states && (document. title == 'County')){
     console.log("Undefined");
     console.log(window.states);
@@ -7,6 +8,7 @@ if(!window.states && (document. title == 'County')){
     window.location.replace("index.html");
                   
 } 
+*/
 
 console.log(document. title);
 let states = window.states;
@@ -21,15 +23,40 @@ loadData().then(data => {
         years: [1985,1990,1995,2000,2005,2010,2015],
         focusCounty: null
     }
+    data.settings.dropOptions = [
+        {
+            key: 0,
+            label: 'Common Water Usage vs Population', 
+            x: 'population', y: 'domestic_commercial_supply'},
+        {
+            key: 1,
+            label: 'Total Water Usage vs Population', 
+            x: 'population', y: 'total_water'},
+        {
+            key: 2,
+            label: 'Total Water Usage vs Temperature', 
+            x: 'temp', y: 'total_water'},
+        {
+            key: 3,
+            label: 'Total Water Usage vs Precipitation', 
+            x: 'precip', y: 'total_water'},
+        {
+            key: 4,
+            label: 'Irrigation per Acre vs Temperature', 
+            x: 'temp', y: 'irrigation_per_acre'},
+        {
+            key: 5,
+            label: 'Irrigation per Acre vs Precipitation', 
+            x: 'precip', y: 'irrigation_per_acre'},
+    ];
+
     data.states = states;
     let that = this;
     console.log(data)
 
     function updateAll() {
-        let xValue = d3.select('#dropdown_x').select('.dropdown-content').select('select').node().value;
-        let yValue = d3.select('#dropdown_y').select('.dropdown-content').select('select').node().value;
-        //let cValue = d3.select('#dropdown_c').select('.dropdown-content').select('select').node().value;
-        scatterPlot.updatePlot(xValue, yValue, xValue);
+        let categoryValue = d3.select('#dropdown_category').select('.dropdown-content').select('select').node().value;
+        scatterPlot.updatePlot(categoryValue);
         countyMap.updateMap();
         focusLines.updateFocus();
         focusLines.updateBars();
@@ -99,7 +126,7 @@ loadData().then(data => {
     line2.updatePlot("precip");
     scatterPlot.drawPlot();
     scatterPlot.drawYearBar();
-    scatterPlot.updatePlot("precip", "temp", "precip");
+    scatterPlot.updatePlot(0);
     focusLines.drawPlot();
     focusLines.drawBars();
     focusLines.updateFocus();
