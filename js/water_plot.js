@@ -9,12 +9,12 @@ class DataPoint {
      * @param region county region
      * @param circleSize value for r from data object chosen for circleSizeIndicator
      */
-    constructor(county, xVal, yVal, id, circleSize) {
+    constructor(county, xVal, yVal, id, colorVal) {
         this.county = county;
         this.xVal = xVal;
         this.yVal = yVal;
         this.id = id;
-        this.circleSize = circleSize;
+        this.colorVal = colorVal;
     }
 }
 
@@ -26,7 +26,7 @@ class ScatterPlot {
      */
     constructor(data, updateAll) {
 
-        this.margin = { top: 20, right: 20, bottom: 60, left: 80 };
+        this.margin = { top: 20, right: 20, bottom: 40, left: 50 };
         this.width = 500 - this.margin.left - this.margin.right;
         this.height = 400 - this.margin.top - this.margin.bottom;
 
@@ -78,33 +78,9 @@ class ScatterPlot {
         /* Below is the setup for the dropdown menu- no need to change this */
         let dropdownWrap = d3.select('#chart-view').append('div').classed('dropdown-wrapper', true);
 
-        /*
-        let cWrap = dropdownWrap.append('div').classed('dropdown-panel', true);
+        let categoryWrap = dropdownWrap.append('div').classed('dropdown-panel', true);
 
-        cWrap.append('div').classed('c-label', true)
-            .append('text')
-            .text('Circle Size');
-
-        cWrap.append('div').attr('id', 'dropdown_c').classed('dropdown', true).append('div').classed('dropdown-content', true)
-            .append('select');
-        */
-
-        let xWrap = dropdownWrap.append('div').classed('dropdown-panel', true);
-
-        xWrap.append('div').classed('x-label', true)
-            .append('text')
-            .text('X Axis Data');
-
-        xWrap.append('div').attr('id', 'dropdown_x').classed('dropdown', true).append('div').classed('dropdown-content', true)
-            .append('select');
-
-        let yWrap = dropdownWrap.append('div').classed('dropdown-panel', true);
-
-        yWrap.append('div').classed('y-label', true)
-            .append('text')
-            .text('Y Axis Data');
-
-        yWrap.append('div').attr('id', 'dropdown_y').classed('dropdown', true).append('div').classed('dropdown-content', true)
+        categoryWrap.append('div').attr('id', 'dropdown_category').classed('dropdown', true).append('div').classed('dropdown-content', true)
             .append('select');
 
         /*
@@ -120,33 +96,28 @@ class ScatterPlot {
     /**
      * Renders the plot for the parameters specified
      *
-     * @param xIndicator identifies the values to use for the x axis
-     * @param yIndicator identifies the values to use for the y axis
-     * @param circleSizeIndicator identifies the values to use for the circle size
+     * @param categoryIndicator identifies the values to use for the x axis
      */
-    updatePlot(xIndicator, yIndicator, circleSizeIndicator) {
+    updatePlot(categoryIndicator) {
         /**
          * @param d the data value to encode
          * @returns {number} the radius
          */
-        let circleSizer = function (d) {
-            let cScale = d3.scaleSqrt().range([3, 20]).domain([minSize, maxSize]);
-            return d.circleSize ? cScale(d.circleSize) : 3;
-        };
+        this.drawDropDown(categoryIndicator);
 
         this.data.transitionDuration = 500;
         let state = this.data.states[0];
-        let activeYear = this.data.settings.activeYear
+        let activeYear = this.data.settings.activeYear;
 
         let xMax = 0;
         let yMax = 0;
-        let rMax = 0;
         let colorMax = 0;
+        let xIndicator = this.data.settings.dropOptions[categoryIndicator].x;
+        let yIndicator = this.data.settings.dropOptions[categoryIndicator].y;
+        let colorIndicator = 'total_water';
         let xMin = this.data[state][Object.keys(this.data[state])[0]][activeYear][xIndicator];
         let yMin = this.data[state][Object.keys(this.data[state])[0]][activeYear][yIndicator];
-        let rMin = this.data[state][Object.keys(this.data[state])[0]][activeYear][circleSizeIndicator];
-        let colorMin = yMin / xMin;
-        this.regions = {}
+        let colorMin = this.data[state][Object.keys(this.data[state])[0]][activeYear][colorIndicator];
 
         for (let state of this.data.states){
             for (let countyID in this.data[state]){
@@ -160,17 +131,11 @@ class ScatterPlot {
                         yMax = +county[i][yIndicator];
                     if (+county[i][yIndicator] < yMin)
                         yMin = +county[i][yIndicator];
-                    if (+county[i][circleSizeIndicator] > rMax)
-                        rMax = +county[i][circleSizeIndicator];
-                    if (+county[i][circleSizeIndicator] < rMin)
-                        rMin = +county[i][circleSizeIndicator];
-                    let slope = +county[i][yIndicator]/+county[i][xIndicator];
-                    if (slope > colorMax && i == activeYear)
-                        colorMax = slope;
-                    if (slope < colorMin && i == activeYear)
-                        colorMin = slope;
                 }
-                let dataPoint = new DataPoint(county.name, county[activeYear][xIndicator], county[activeYear][yIndicator], countyID,  county[activeYear][circleSizeIndicator]);
+                colorMax = Math.max(+county[activeYear][colorIndicator], colorMax);
+                colorMin = Math.min(+county[activeYear][colorIndicator], colorMin);
+
+                let dataPoint = new DataPoint(county.name, county[activeYear][xIndicator], county[activeYear][yIndicator], countyID,  county[activeYear][colorIndicator]);
                 this.data.plotData[state][+countyID] = dataPoint;
             }
         }
@@ -188,14 +153,11 @@ class ScatterPlot {
             .select(".axis-label-y")
             .text(this.data.labels[yIndicator])
             .style("text-anchor", "middle")
-            .attr("transform", "translate(-65,"+(this.height/2)+") rotate(-90)");
+            .attr("transform", "translate(-35,"+(this.height/2)+") rotate(-90)");
         let yAxis = d3.select("#y-axis").call(d3.axisLeft(yScale));
         let colorScale = d3.scaleSequential().domain([colorMin, colorMax])
             .interpolator(d3.interpolateBlues);
         this.data.colorScale = colorScale;
-
-        let minSize = rMin;
-        let maxSize = rMax;
 
         console.log("---------------------");
         console.log(this.data.plotData[state]);
@@ -230,111 +192,44 @@ class ScatterPlot {
                 })
                 .transition()
                 .duration(this.data.transitionDuration)
-                //.attr("r", d => circleSizer(d))
                 .attr("r", 6)
                 .attr("cx", d => xScale(d.xVal))
                 .attr("cy", d => yScale(d.yVal))
-                .attr("fill", d => colorScale(d.yVal/d.xVal))
+                .attr("fill", d => colorScale(d.colorVal))
             circleGroup.exit().remove();
         }
         d3.select(".activeYear-background").text(this.data.settings.activeYear);
 
         //this.drawLegend(rMin, rMax);
-        this.drawDropDown(xIndicator, yIndicator, circleSizeIndicator);
     }
 
     /**
      * Setting up the drop-downs
-     * @param xIndicator identifies the values to use for the x axis
-     * @param yIndicator identifies the values to use for the y axis
-     * @param circleSizeIndicator identifies the values to use for the circle size
+     * @param categoryIndicator identifies the values to use for the x and y axis
      */
-    drawDropDown(xIndicator, yIndicator, circleSizeIndicator) {
+    drawDropDown(categoryIndicator) {
 
         let that = this;
         let dropDownWrapper = d3.select('.dropdown-wrapper');
-        let dropData = [];
 
-        let obj = this.data[this.data.states[0]][1][this.data.settings.activeYear];
-        for (let key in obj) {
-            dropData.push({
-                indicator: key,
-                indicator_name: key
-            });
-        }
-
-        /* CIRCLE DROPDOWN */
-        /*
-        let dropC = dropDownWrapper.select('#dropdown_c').select('.dropdown-content').select('select');
-
-        let optionsC = dropC.selectAll('option')
-            .data(dropData);
-
-
-        optionsC.exit().remove();
-
-        let optionsCEnter = optionsC.enter()
-            .append('option')
-            .attr('value', (d, i) => d.indicator);
-
-        optionsCEnter.append('text')
-            .text((d, i) => d.indicator_name);
-
-        optionsC = optionsCEnter.merge(optionsC);
-
-        let selectedC = optionsC.filter(d => d.indicator === circleSizeIndicator)
-            .attr('selected', true);
-
-        dropC.on('change', function (d, i) {
-            let cValue = this.options[this.selectedIndex].value;
-            let xValue = dropX.node().value;
-            let yValue = dropY.node().value;
-            that.updateAll();
-        });
-        */
-
-        /* X DROPDOWN */
-        let dropX = dropDownWrapper.select('#dropdown_x').select('.dropdown-content').select('select');
-
-        let optionsX = dropX.selectAll('option')
-            .data(dropData);
-
-        optionsX.exit().remove();
-
-        let optionsXEnter = optionsX.enter()
-            .append('option')
-            .attr('value', (d, i) => d.indicator);
-
-        optionsXEnter.append('text')
-            .text((d, i) => d.indicator_name);
-
-        optionsX = optionsXEnter.merge(optionsX);
-
-        let selectedX = optionsX.filter(d => d.indicator === xIndicator)
-            .attr('selected', true);
-
-        dropX.on('change', function (d, i) {
-            that.updateAll();
-        });
-
-        /* Y DROPDOWN */
-        let dropY = dropDownWrapper.select('#dropdown_y').select('.dropdown-content').select('select');
+        /* category DROPDOWN */
+        let dropY = dropDownWrapper.select('#dropdown_category').select('.dropdown-content').select('select');
 
         let optionsY = dropY.selectAll('option')
-            .data(dropData);
+            .data(this.data.settings.dropOptions);
 
         optionsY.exit().remove();
 
         let optionsYEnter = optionsY.enter()
             .append('option')
-            .attr('value', (d, i) => d.indicator);
+            .attr('value', (d, i) => d.key);
 
         optionsY = optionsYEnter.merge(optionsY);
 
         optionsYEnter.append('text')
-            .text((d, i) => d.indicator_name);
+            .text((d, i) => d.label);
 
-        let selectedY = optionsY.filter(d => d.indicator === yIndicator)
+        let selectedY = optionsY.filter(d => d.key === categoryIndicator)
             .attr('selected', true);
 
         dropY.on('change', function (d, i) {
@@ -350,7 +245,7 @@ class ScatterPlot {
         let that = this;
 
         //Slider to change the activeYear of the data
-        let yearScale = d3.scaleLinear().domain([1985, 2015]).range([30, this.width]);
+        let yearScale = d3.scaleLinear().domain([1985, 2015]).range([0, this.width]);
 
         let yearSlider = d3.select('#activeYear-bar')
             .append('div').classed('slider-wrap', true)

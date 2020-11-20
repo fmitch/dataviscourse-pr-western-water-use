@@ -104,7 +104,7 @@ class CountyMap {
                         return linecolorScale(d.properties.NAME);
 
                     }
-                    return that.data.colorScale(that.data.plotData[state][+d.properties.COUNTY].yVal/that.data.plotData[state][+d.properties.COUNTY].xVal);
+                    return that.data.colorScale(that.data.plotData[state][+d.properties.COUNTY].colorVal);
                 });
         }
     }
