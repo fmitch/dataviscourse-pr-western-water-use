@@ -66,6 +66,12 @@ loadData().then(data => {
     }
 
     function updateAllLine() {
+        /** 
+         * CategoryValue will provide the key for the x and y values, as such:
+         * let categoryValue = d3.select('#dropdown_category').select('.dropdown-content').select('select').node().value;
+         * let xIndicator = this.data.settings.dropOptions[categoryIndicator].x;
+         * let yIndicator = this.data.settings.dropOptions[categoryIndicator].y;
+         */
         let yValue = d3.select('#dropdown_y-line').select('.dropdown-content').select('select').node().value;
         //let cValue = d3.select('#dropdown_c').select('.dropdown-content').select('select').node().value;
         line1.updatePlot(yValue);
