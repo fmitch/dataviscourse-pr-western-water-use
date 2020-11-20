@@ -148,7 +148,6 @@ class ScatterPlot {
         let colorMin = yMin / xMin;
         this.regions = {}
 
-
         for (let state of this.data.states){
             for (let countyID in this.data[state]){
                 let county = this.data[state][countyID];

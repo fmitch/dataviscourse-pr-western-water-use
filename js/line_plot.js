@@ -11,6 +11,7 @@ class DataPointLine {
         this.yVal = yVal;
         // this.yVal = yVal;
         this.id = id;
+        this.colorclick = false;
     }
 }
 
@@ -20,7 +21,7 @@ class LinePlot {
     /**
      * @param updateAll a callback function used to notify other parts of the program when a year was updated
      */
-    constructor(data,updateAllLine) {
+    constructor(data,updateAllLine,buttonclick) {
 
         this.margin = { top: 20, right: 20, bottom: 60, left: 80 };
         this.width = 500 - this.margin.left - this.margin.right;
@@ -32,6 +33,7 @@ class LinePlot {
             this.data.plotDataLine[state] = {};
         }
         this.updateAllLine = updateAllLine;
+        this.buttonclick = buttonclick;
 
 
     }
@@ -41,10 +43,24 @@ class LinePlot {
      */
 
     drawPlot(viewer) {
+        let that = this;
         // console.log("LIne chart");
         // console.log(this.data.labels);
+        let toggleheader = d3.select("#line1")
+            .append("div").attr("id", "toggle-header");
+
+        //reference : w3 school : https://www.w3schools.com/howto/howto_css_switch.asp
+        toggleheader.html('Color the MAP: <input id="checkboxbtn" type="checkbox">');
+    
+        d3.select("#checkboxbtn")
+            .on("click",function(){
+            that.buttonclick();
+        });
+
+
         d3.select('#line1')
             .append('div').attr('id', 'line-chart-view');
+
         d3.select('#line-chart-view')
             .append('svg').classed('plot-svg', true)
             .attr("width", this.width + this.margin.left + this.margin.right)
@@ -67,18 +83,6 @@ class LinePlot {
 
         /* Below is the setup for the dropdown menu- no need to change this */
         let dropdownWrap = d3.select('#line-chart-view').append('div').classed('dropdown-wrapper-line', true);
-
-        /*
-        let cWrap = dropdownWrap.append('div').classed('dropdown-panel', true);
-
-        cWrap.append('div').classed('c-label', true)
-            .append('text')
-            .text('Circle Size');
-
-        cWrap.append('div').attr('id', 'dropdown_c').classed('dropdown', true).append('div').classed('dropdown-content', true)
-            .append('select');
-        */
-
         
         let yWrap = dropdownWrap.append('div').classed('dropdown-panel', true);
 
@@ -89,14 +93,6 @@ class LinePlot {
         yWrap.append('div').attr('id', 'dropdown_y-line').classed('dropdown', true).append('div').classed('dropdown-content', true)
             .append('select');
 
-        /*
-        d3.select('#chart-view')
-            .append('div')
-            .classed('circle-legend', true)
-            .append('svg')
-            .append('g')
-            .attr('transform', 'translate(10, 0)');
-        */
     }
 
     /**
@@ -178,9 +174,10 @@ class LinePlot {
             .style("text-anchor", "middle")
             .attr("transform", "translate(-65,"+(this.height/2)+") rotate(-90)");
         let yAxis = d3.select("#y-axis-line").call(d3.axisLeft(yScale));
-        let colorScale = d3.scaleSequential().domain([colorMin, colorMax])
-            .interpolator(d3.interpolateBlues);
+        // let colorScale = d3.scaleSequential().domain([colorMin, colorMax])
+        //     .interpolator(d3.interpolateBlues);
         // this.data.colorScale = colorScale;
+
 
         // let minSize = rMin;
         // let maxSize = rMax;
@@ -192,18 +189,30 @@ class LinePlot {
                 .x(d => xScale(d.year))
                 .y(d => yScale(d.value));
         // Data are categories (each line that is drawn), serves as key to lineData[key] for lineGen
-        
+
+        //color list reference: https://jnnnnn.blogspot.com/2017/02/distinct-colours-2.html
+        let color_scale = d3.scaleOrdinal().domain(countyname).range(["#1b70fc", "#faff16", "#d50527", "#158940", "#f898fd", "#24c9d7", "#cb9b64", "#866888", "#22e67a",
+         "#e509ae", "#9dabfa", "#437e8a", "#b21bff", "#ff7b91", "#94aa05", "#ac5906", "#82a68d", "#fe6616", "#7a7352", "#f9bc0f", "#b65d66", "#07a2e6", "#c091ae",
+          "#8a91a7", "#88fc07", "#ea42fe", "#9e8010", "#10b437", "#c281fe", "#f92b75", "#07c99d", "#a946aa", "#bfd544", "#16977e", "#ff6ac8", "#a88178", "#5776a9",
+           "#678007", "#fa9316", "#85c070", "#6aa2a9", "#989e5d", "#fe9169", "#cd714a", "#6ed014", "#c5639c", "#c23271", "#698ffc", "#678275", "#c5a121", "#a978ba",
+            "#ee534e", "#d24506", "#59c3fa", "#ca7b0a", "#6f7385", "#9a634a", "#48aa6f", "#ad9ad0", "#d7908c", "#6a8a53", "#8c46fc", "#8f5ab8", "#fd1105", "#7ea7cf",
+             "#d77cd1", "#a9804b", "#0688b4", "#6a9f3e", "#ee8fba", "#a67389", "#9e8cfe", "#bd443c", "#6d63ff", "#d110d5", "#798cc3", "#df5f83", "#b1b853", "#bb59d8",
+              "#1d960c", "#867ba8", "#18acc9", "#25b3a7", "#f3db1d", "#938c6d", "#936a24", "#a964fb", "#92e460", "#a05787", "#9c87a0", "#20c773", "#8b696d", "#78762d",
+               "#e154c6", "#40835f", "#d73656", "#1afd5c", "#c4f546", "#3d88d8", "#bd3896", "#1397a3", "#f940a5", "#66aeff", "#d097e7", "#fe6ef9", "#d86507", "#8b900a",
+                "#d47270", "#e8ac48", "#cf7c97", "#cebb11", "#718a90", "#e78139", "#ff7463", "#bea1fd"]);
         console.log(countyname);
         let lineGroup = d3.select('#lines').selectAll('path').data(countyname);
         console.log(lineGroup);
         lineGroup.join('path')
-        .attr("fill", "none")
-      .attr("stroke", "steelblue")
-      .attr("stroke-width", 1.5)
+        .attr("fill",'none')
+      .attr("stroke", d => color_scale(d))
+      .attr("stroke-width", 1)
             .classed('line-path', true)
             // .attr('stroke', d => this.colorScale(d))
             .attr('d', d => {
                 return lineGen(lineData[d]) })
+            .append("svg:title")
+          .text(function(d, i) { return d; })
             .transition()
             .duration(this.data.transitionDuration);
         lineGroup.exit().remove();
@@ -277,5 +286,7 @@ class LinePlot {
         let text = "<h2>" + data['county'] + "</h2>";
         return text;
     }
+
+
 
 }

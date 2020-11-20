@@ -87,5 +87,6 @@ async function loadData() {
             }
         });
     }
+    data.linecolor = [false,''];
     return data;
 }

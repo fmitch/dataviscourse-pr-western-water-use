@@ -87,6 +87,11 @@ class CountyMap {
                 .transition()
                 .duration(this.data.transitionDuration)
                 .attr("fill", d => {
+                    if(this.data.linecolor[0]){
+                        let linecolorScale =  this.data.linecolor[1];
+                        return linecolorScale(d.properties.NAME);
+
+                    }
                     return that.data.colorScale(that.data.plotData[state][+d.properties.COUNTY].yVal/that.data.plotData[state][+d.properties.COUNTY].xVal);
                 });
         }
