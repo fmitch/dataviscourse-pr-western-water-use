@@ -109,14 +109,13 @@ class FocusLines {
             .attr("transform", "translate("+this.width/2+","+(this.height+35)+")");
         let xAxis = d3.select("#poi-bar-x-axis").call(d3.axisBottom(xScale).tickValues([.1,.2,.3,.4,.5,.6,.7,.8,.9,1]).tickFormat(d3.format('.0%')));
 
-        let yScale = d3.scaleLinear()
-            .range([0,this.height/Math.max(numCounties, 4)])
-            .domain([0,maxWidth]).nice();
         let bandScale = d3.scaleBand()
             .domain(selectedCounties)
             .range([0, this.height])
-            .paddingInner(0.05)
-            .align(0.1);
+            .paddingInner(0.05);
+        let yScale = d3.scaleLinear()
+            .range([0,bandScale.bandwidth()])
+            .domain([0,maxWidth]);
         d3.select('#poi-bar-div').select('.wrapper-group').select('.y-axis')
             .attr("transform", `translate(0,${-bandScale.bandwidth()/2})`)
             .call(d3.axisLeft(bandScale).tickFormat(x => {

@@ -88,3 +88,46 @@ So far we were able to answer a few question with respect to water consumption a
 
 We are still working on creating different visuals such as additional line charts and stacked bar plots. These additional features will help understand and provide an informative visual of the data.
 
+
+* Home Page:
+  * Rather than opening new page, shrink map down to top right with selected state(s) filled with color. 
+* Frost: Grid: Shrink everything to window/3.
+* Frost: Map
+  * Set map/chart color to a constant scheme. Total Water Usage?
+  * Add tooltip with color information
+  * Legend for color
+* Frost: Scatterplot 
+  * Adjust color to match map.
+  * Rather than option for each axis, define some preset plots to view.
+    * (Public + Domestic water usage) vs Population
+    * Total Water usage vs Temperature
+    * Total Water usage vs Precipitation
+    * (Irrigation per acre) vs temp
+    * (Irrigation per acre) vs precipitation 
+    * this.data.scatterSelection.x = variable
+* Prav: Line Plots:
+  * Automatically show lines based on Scatterplot settings.
+  * Too many lines:
+    * With no selection, show some lines and hide others.
+    * With selection, show selection and hide others.
+  * Tooltip  - TBD
+  * Bring first year closer to origin
+* Frost: Focus View
+  * Hide axis for bar chart
+  * Merge water categories:
+    * Merge (Commercial, industrial, power)
+    * Merge (Industrial, power)
+    * Should I separate domestic, commerical, and industrial out of public supply and add to other categories, where the data is available? Yes.
+    * Categories:
+      * Domestic & Commercial (Including Public Supply when not separate)
+      * Industrial (Power) (Separated from Public Supply when possible)
+      * Mining 
+      * Livestock
+      * Irrigation
+  * Add a clear description to the bar height.
+* Features
+  * Prav: Info overlay tooltip
+  * Frost: Distance function to similar counties. Select 4 nearest counties to selection and show on line charts. Add toggle to auto-select similar counties.
+* Visual Style
+  * Get axis labels in a closer position
+  * Get better placement of Scatterplot slider, slider label, and drop-down
