@@ -29,6 +29,7 @@ class CountyMap {
     constructor(data, updateAll) {
         this.data = data
         this.updateAll = updateAll;
+        this.autoSelector = new AutoSelector(this.data, this.updateAll);
     }
 
     /**
@@ -90,6 +91,7 @@ class CountyMap {
                         that.data.settings.focusCounty = null;
                     else
                         that.data.settings.focusCounty = state+(+d.properties.COUNTY);
+                    that.autoSelector.autoSelect();
                     that.updateAll();
                 });
         }

@@ -10,9 +10,11 @@ class FocusLines {
         this.data = data;
         let categories = Object.keys(this.data['utah'][1][1985]);
         this.water_categories = [];
+        this.category_labels = [];
         for (let category of categories){
             if (category.includes('supply')) { 
                 this.water_categories.push(category);
+                this.category_labels.push(data.labels[category])
             }
         }
         this.colorScale = d3.scaleOrdinal().domain(this.water_categories).range(d3.schemeTableau10);
@@ -235,13 +237,15 @@ class FocusLines {
     drawLegend() {
         d3.select('#poi-legend')
             .append('svg').classed('plot-svg', true)
-            .attr("width", '100px')
+            .attr("width", this.margin.left + this.width)
             .attr("height", this.height + this.margin.top + this.margin.bottom);
 
         let legendGroup = d3.select('#poi-legend').select('.plot-svg')
             .append('g')
-            .attr("transform", `translate(0,${this.margin.top})`);
-        let legendOrdinal = d3.legendColor().scale(this.colorScale);
+            .attr("transform", `translate(${this.margin.left},${0})`);
+        let legendOrdinal = d3.legendColor()
+            .scale(this.colorScale)
+            .labels(this.category_labels);
         legendGroup.call(legendOrdinal);
         this.showLegend(false);
     }

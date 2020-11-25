@@ -45,6 +45,12 @@ class ScatterPlot {
      */
 
     drawPlot() {
+        d3.select('#color-legend')
+            .append('div').attr('id', 'color-legend-view')
+            .append('svg').attr('id', 'color-legend-svg');
+        d3.select('#color-legend-svg').append('g')
+            .attr('class', 'legendSequential')
+            .attr('transform', 'translate(20,20)');
         d3.select('#scatter-plot')
             .append('div').attr('id', 'chart-view');
         d3.select('#scatter-plot')
@@ -158,6 +164,34 @@ class ScatterPlot {
         let colorScale = d3.scaleSequential().domain([colorMin, colorMax])
             .interpolator(d3.interpolateBlues);
         this.data.colorScale = colorScale;
+
+        let legendSvg = d3.select('#color-legend-svg');
+        legendSvg.attr('width', this.width + this.margin.left + this.margin.right)
+            .attr('height', 65)
+        let cellWidth = 4;
+        let labelSize = Math.round(this.width/cellWidth);
+        let legendSequential = d3.legendColor()
+            .shapeWidth(cellWidth + 0.5)
+            .shapeHeight(20)
+            .cells(labelSize)
+            .shapePadding(-0.5)
+            .labelOffset(7)
+            .orient('horizontal')
+            .title('Total Water Usage, Mgal/day')
+            .labels('')
+            .scale(colorScale);
+        legendSvg.select('.legendSequential')
+            .attr('transform', `translate(${this.margin.left},20)`)
+            .call(legendSequential);
+        legendSvg.select('.legendCells').attr('transform', `translate(${0},10)`);
+        let labels = legendSvg.selectAll('.label')
+        labels.filter((d,i) => i === 0)
+            .classed('label', false)
+            .classed('first-label', true);
+        labels.filter((d,i) => i === labelSize-1)
+            .classed('label', false)
+            .classed('last-label', true);
+        legendSvg.selectAll('.label').remove();
 
         console.log("---------------------");
         console.log(this.data.plotData[state]);
