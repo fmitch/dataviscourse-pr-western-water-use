@@ -76,7 +76,12 @@ class CountyMap {
                         that.data.settings.selectedCounties.splice(index, 1);
                     }
                     else{
-                        that.data.settings.selectedCounties.push(county);
+                        if(this.data.settings.selectedCounties.length >= 5){
+                            alert("Only 5 Counties can be selected");
+                        }
+                        else{
+                            that.data.settings.selectedCounties.push(county);
+                        }
                     }
                     that.updateAll();
                 })
