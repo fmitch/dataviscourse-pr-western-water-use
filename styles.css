@@ -22,7 +22,7 @@ text.map-label {
 }
 
 .line-path {
-    stroke-width: 3px;
+    stroke-width: 5px;
 }
 
 circle.selected-region {

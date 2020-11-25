@@ -16,14 +16,16 @@
     grid-row: 1;
   }
   
+  /*
   #map-buttons {
     grid-column: 1;
     grid-row: 2;
   }
+  */
   
   #county-map {
     grid-column: 1;
-    grid-row: 3;
+    grid-row: 2/4;
   }
   
   #scatter-plot {
