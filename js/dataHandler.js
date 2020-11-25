@@ -34,15 +34,15 @@ async function loadData() {
         precip: "Annual Precipitation (inches)",
         temp: "Average Yearly Temperature (F)",
         population: "Population, in thousands",
-        domestic_commercial_supply: "Public Water Usage, in Mgal/d",
-        industrial_self_supply: "Industrial Water Usage, in Mgal/d",
-        mining_self_supply: "Mining Water Usage, in Mgal/d",
-        livestock_self_supply: "Livestock Water Usage, in Mgal/d",
-        irrigation_self_supply: "Irrigation Water Usage, in Mgal/d",
+        domestic_commercial_supply: "Public Water Usage, in Mgal/day",
+        industrial_self_supply: "Industrial Water Usage, in Mgal/day",
+        mining_self_supply: "Mining Water Usage, in Mgal/day",
+        livestock_self_supply: "Livestock Water Usage, in Mgal/day",
+        irrigation_self_supply: "Irrigation Water Usage, in Mgal/day",
         irrigation_acres: "Irrigated Acres, in thousands",
         //Derived data
-        irrigation_per_acre: 'Irrigation per Acre, Mgal/d',
-        total_water: 'Total Water Usage, in Mgal/d',
+        irrigation_per_acre: 'Irrigation per Acre, Mgal/day',
+        total_water: 'Total Water Usage, in Mgal/day',
     };
     data.axisVariables = {
     }
