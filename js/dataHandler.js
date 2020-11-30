@@ -19,7 +19,7 @@ async function loadFile(file, loaderFunc = d3.csv) {
     return data;
 }
 
-async function loadData() {
+async function loadData(states){
     let data = {};
     let usageCategories = {
         population: [["Total Population total population of area, in thousands"], 1e3],
@@ -49,7 +49,7 @@ async function loadData() {
     console.log(states);
     for (let state of states){
         data[state] = {};
-        let usage = await loadFile(`data/${state}/water_use.tsv`, d3.tsv);
+        let usage = await loadFile(`data/${state}/water_use`, d3.tsv);
         let precip = await loadFile(`data/${state}/precip.csv`);
         let temp = await loadFile(`data/${state}/temp.csv`);
         precip.forEach(entry => {
@@ -66,22 +66,23 @@ async function loadData() {
             data[state][+entry.county][+entry.year]['temp'] = +entry.temp;
         });
         usage.forEach(entry => {
-            data[state][+entry.county_cd]['name'] = entry.county_nm.replace(' County', '');
-            let total_water = 0
-            for (let key in usageCategories){
-                let sum = 0; 
-                usageCategories[key][0].forEach(innerKey => {
-                    if (entry[innerKey] !== '-')
-                        sum += +entry[innerKey]
-                });
-                //sum *= usageCategories[key][1];
-                data[state][+entry.county_cd][+entry.year][key] = sum;
-                if (key.includes('supply'))
-                    total_water += sum
+            if (data[state].hasOwnProperty(+entry.county_cd)){
+                data[state][+entry.county_cd]['name'] = entry.county_nm.replace(' County', '');
+                let total_water = 0
+                for (let key in usageCategories){
+                    let sum = 0; 
+                    usageCategories[key][0].forEach(innerKey => {
+                        if (entry[innerKey] !== '-')
+                            sum += +entry[innerKey]
+                    });
+                    //sum *= usageCategories[key][1];
+                    data[state][+entry.county_cd][+entry.year][key] = sum;
+                    if (key.includes('supply'))
+                        total_water += sum
+                }
+                data[state][+entry.county_cd][+entry.year].irrigation_per_acre = data[state][+entry.county_cd][+entry.year].irrigation_self_supply / data[state][+entry.county_cd][+entry.year].irrigation_acres;
+                data[state][+entry.county_cd][+entry.year].total_water = total_water;
             }
-            data[state][+entry.county_cd][+entry.year].irrigation_per_acre = data[state][+entry.county_cd][+entry.year].irrigation_self_supply / data[state][+entry.county_cd][+entry.year].irrigation_acres;
-
-            data[state][+entry.county_cd][+entry.year].total_water = total_water;
         });
     }
     data.linecolor = [false,''];

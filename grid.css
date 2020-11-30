@@ -1,9 +1,9 @@
 .wrapper {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    row-gap: 20px;
+    row-gap: 10px;
     column-gap: 10px;
-    grid-template-rows: 80px  70px repeat(2, 1fr);
+    grid-template-rows: 80px  50px repeat(2, 1fr);
   }
   
   .header {

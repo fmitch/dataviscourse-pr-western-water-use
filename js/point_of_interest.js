@@ -8,13 +8,14 @@ class FocusLines {
         this.height = data.settings.cell.height - this.margin.top - this.margin.bottom;
 
         this.data = data;
-        let categories = Object.keys(this.data['utah'][1][1985]);
+        let state = this.data.states[0];
+        let categories = Object.keys(this.data[state][1][1985]);
         this.water_categories = [];
         this.category_labels = [];
         for (let category of categories){
             if (category.includes('supply')) { 
                 this.water_categories.push(category);
-                this.category_labels.push(data.labels[category])
+                this.category_labels.push(data.labels[category].replace('Water Usage, in Mgal/day', ''))
             }
         }
         this.colorScale = d3.scaleOrdinal().domain(this.water_categories).range(d3.schemeTableau10);
@@ -27,7 +28,7 @@ class FocusLines {
         let html = `<h2>${this.data[currentState][currentCounty].name} County</h2>`;  
         for (let i = 0; i<this.water_categories.length; i++) {
             let value = Number(this.data[currentState][currentCounty][this.data.settings.activeYear][this.water_categories[i]]).toFixed(2);
-            html += `<h2>${this.category_labels[i].replace('Water Usage, in ', '(') + ')'}: ${value}</h2>`
+            html += `<h2>${this.category_labels[i]}: ${value} Mgal/day</h2>`
         }
         return html;
     }
@@ -289,10 +290,12 @@ class FocusLines {
             .append('g')
             .attr("transform", `translate(${this.margin.left},${0})`);
         let legendOrdinal = d3.legendColor()
-            .shapeWidth(8)
-            .shapeHeight(8)
+            .shapeWidth(50)
+            .shapeHeight(15)
+            .shapePadding(10)
+            .orient('horizontal')
             .scale(this.colorScale)
-            .labels(this.category_labels);
+            .labels(this.category_labels)
         legendGroup.call(legendOrdinal);
         this.showLegend(false);
     }

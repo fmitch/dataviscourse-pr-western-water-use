@@ -10,14 +10,30 @@ if(!window.states && (document. title == 'County')){
 } 
 */
 
+function toTitleCase(str) {
+    return str.replace(/\w\S*/g, function(txt){
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+}
+
 console.log(document. title);
-// let states = window.states;
-let states = ['utah'];
+let states = window.states;
+let allStates = ['arizona', 'california', 'colorado', 'idaho', 'montana', 
+                  'nevada', 'new mexico', 'oregon','utah', 'washington', 'wyoming'];
 console.log(states);
 if (states === undefined)
-    states = ['utah'];
+    states = ['utah', 'nevada'];
 
-loadData().then(data => {
+loadData(allStates).then(data => {
+    let stateText = ''
+    for (let i=0; i<states.length; i++){
+        if (i===0)
+            stateText = toTitleCase(states[i]);
+        else
+            stateText += `, ${toTitleCase(states[i])}`
+    }
+    stateText += ' Water Usage'
+    d3.select('h2').text(stateText);
     data.settings = {
         selectedCounties: [],
         activeYear: '2015',
@@ -157,8 +173,4 @@ loadData().then(data => {
     }
     drawMap();
 
-    // This clears a selection by listening for a click
-    //document.addEventListener("click", function (e) {
-    //    updateCounty(null);
-    //}, true);
 });

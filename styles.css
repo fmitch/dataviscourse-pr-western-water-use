@@ -6,7 +6,7 @@ div.hidden {
     display: none
 }
 
-text.label{
+text.label, text.first-label, text.last-label, text.legendTitle{
     font-size: small;
 }
 
@@ -20,7 +20,7 @@ circle {
 }
 
 text.map-label {
-    font-size: x-small;
+    font-size: xx-small;
     text-anchor: middle;
     opacity: .8;
 }

@@ -9,12 +9,13 @@ class DataPoint {
      * @param region county region
      * @param circleSize value for r from data object chosen for circleSizeIndicator
      */
-    constructor(county, xVal, yVal, id, colorVal) {
+    constructor(county, xVal, yVal, id, colorVal, state) {
         this.county = county;
         this.xVal = xVal;
         this.yVal = yVal;
         this.id = id;
         this.colorVal = colorVal;
+        this.state = state;
     }
 }
 
@@ -32,9 +33,6 @@ class ScatterPlot {
 
         this.data = data;
         this.data.plotData = {};
-        for (let state of this.data.states){
-            this.data.plotData[state] = {};
-        }
 
         this.updateAll = updateAll;
 
@@ -46,7 +44,6 @@ class ScatterPlot {
 
     drawPlot() {
         d3.select('#color-legend')
-            .append('div').attr('id', 'color-legend-view')
             .append('svg').attr('id', 'color-legend-svg');
         d3.select('#color-legend-svg').append('g')
             .attr('class', 'legendSequential')
@@ -133,8 +130,8 @@ class ScatterPlot {
                 colorMax = Math.max(+county[activeYear][colorIndicator], colorMax);
                 colorMin = Math.min(+county[activeYear][colorIndicator], colorMin);
 
-                let dataPoint = new DataPoint(county.name, county[activeYear][xIndicator], county[activeYear][yIndicator], countyID,  county[activeYear][colorIndicator]);
-                this.data.plotData[state][+countyID] = dataPoint;
+                let dataPoint = new DataPoint(county.name, county[activeYear][xIndicator], county[activeYear][yIndicator], countyID,  county[activeYear][colorIndicator], state);
+                this.data.plotData[state+(+countyID)] = dataPoint;
             }
         }
 
@@ -158,24 +155,25 @@ class ScatterPlot {
         this.data.colorScale = colorScale;
 
         let legendSvg = d3.select('#color-legend-svg');
-        legendSvg.attr('width', this.width + this.margin.left + 20)
-            .attr('height', 65)
-        let cellWidth = 4;
-        let labelSize = Math.round(this.width/cellWidth);
+        legendSvg.attr('width', this.width + this.margin.left)
+            .attr('height', 50)
+        let cellWidth = 3;
+        let legendWidth = this.width-this.margin.left - this.margin.right;
+        let labelSize = Math.round(legendWidth/cellWidth);
         let legendSequential = d3.legendColor()
             .shapeWidth(cellWidth + 0.5)
             .shapeHeight(15)
             .cells(labelSize)
             .shapePadding(-0.5)
-            .labelOffset(7)
+            .labelOffset(4)
             .orient('horizontal')
             .title('Total Water Usage, Mgal/day')
             .labels('')
             .scale(colorScale);
         legendSvg.select('.legendSequential')
-            .attr('transform', `translate(${20},20)`)
+            .attr('transform', `translate(70,10)`)
             .call(legendSequential);
-        legendSvg.select('.legendCells').attr('transform', `translate(${0},10)`);
+        legendSvg.select('.legendCells').attr('transform', `translate(0,5)`);
         let labels = legendSvg.selectAll('.label')
         labels.filter((d,i) => i === 0)
             .classed('label', false)
@@ -185,50 +183,46 @@ class ScatterPlot {
             .classed('last-label', true);
         legendSvg.selectAll('.label').remove();
 
-        console.log("---------------------");
-        console.log(this.data.plotData[state]);
-        for (let state of this.data.states){
-            let circleGroup = d3.select("#points").selectAll("circle").data(Object.values(this.data.plotData[state]));
+        let circleGroup = d3.select("#points").selectAll("circle").data(Object.values(this.data.plotData));
 
-            let that = this;
-            let enterPoint = circleGroup.join("circle")
-                .classed(state+'-dot', true)
-                .attr("id", d => state+d.id)
-                .on("mouseover", d => {
-                    d3.select(".tooltip")
-                        .style("opacity",0.9)
-                        .style("left",d3.event.pageX+15+"px")
-                        .style("top",d3.event.pageY-25+"px")
-                        .html(this.tooltipRender(d));
-                })
-                .on("mouseout", d => {
-                    d3.select(".tooltip")
-                        .style("opacity",0);
-                })
-                .on("click", d => {
-                    let county = state+d.id;
-                    if (that.data.settings.selectedCounties.includes(county)){
-                        let index = that.data.settings.selectedCounties.indexOf(county);
-                        that.data.settings.selectedCounties.splice(index, 1);
+        let that = this;
+        let enterPoint = circleGroup.join("circle")
+            .attr('class', d => d.state+'-dot')
+            .attr("id", d => d.state+d.id)
+            .on("mouseover", d => {
+                d3.select(".tooltip")
+                    .style("opacity",0.9)
+                    .style("left",d3.event.pageX+15+"px")
+                    .style("top",d3.event.pageY-25+"px")
+                    .html(this.tooltipRender(d));
+            })
+            .on("mouseout", d => {
+                d3.select(".tooltip")
+                    .style("opacity",0);
+            })
+            .on("click", d => {
+                let county = d.state+d.id;
+                if (that.data.settings.selectedCounties.includes(county)){
+                    let index = that.data.settings.selectedCounties.indexOf(county);
+                    that.data.settings.selectedCounties.splice(index, 1);
+                }
+                else{
+                    if(this.data.settings.selectedCounties.length >= 5){
+                        alert("Only 5 Counties can be selected");
                     }
                     else{
-                        if(this.data.settings.selectedCounties.length >= 5){
-                            alert("Only 5 Counties can be selected");
-                        }
-                        else{
-                            that.data.settings.selectedCounties.push(county);
-                        }
+                        that.data.settings.selectedCounties.push(county);
                     }
-                    that.updateAll();
-                })
-                .transition()
-                .duration(this.data.transitionDuration)
-                .attr("r", 6)
-                .attr("cx", d => xScale(d.xVal))
-                .attr("cy", d => yScale(d.yVal))
-                .attr("fill", d => colorScale(d.colorVal))
-            circleGroup.exit().remove();
-        }
+                }
+                that.updateAll();
+            })
+            .transition()
+            .duration(this.data.transitionDuration)
+            .attr("r", 6)
+            .attr("cx", d => xScale(d.xVal))
+            .attr("cy", d => yScale(d.yVal))
+            .attr("fill", d => colorScale(d.colorVal))
+        circleGroup.exit().remove();
         d3.select(".activeYear-background").text(this.data.settings.activeYear);
 
         //this.drawLegend(rMin, rMax);
