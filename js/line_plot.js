@@ -25,11 +25,6 @@ class LinePlot {
         this.height = data.settings.cell.height - this.margin.top - this.margin.bottom;
 
         this.data = data;
-        this.data.plotDataLine = {};
-        for (let state of this.data.states){
-            this.data.plotDataLine[state] = {};
-        }
-
         this.linecolorScale = '';
         this.countyname = [];
 
@@ -96,6 +91,7 @@ class LinePlot {
 
     
     updatePlot(yIndicator) {
+        this.data.plotDataLine = {};
         
         yIndicator = this.data.settings.dropOptions[yIndicator].y;
 
@@ -152,7 +148,7 @@ class LinePlot {
                 }
 
                 let dataPoint = new DataPointLine(county.name, valy, countyID);
-                this.data.plotDataLine[state][+countyID] = dataPoint;
+                this.data.plotDataLine[state+(+countyID)] = dataPoint;
 
             }
         }
@@ -176,7 +172,7 @@ class LinePlot {
         let yAxis = d3.select("#y-axis-line").call(d3.axisLeft(yScale));
 
         console.log("---------------------");
-        console.log(this.data.plotDataLine[state]);
+        console.log(this.data.plotDataLine);
 // --------------------------------------------------------------------------------------------------------------------------------------------------------
         let lineGen = d3.line()
                 .x(d => xScale(d.year))

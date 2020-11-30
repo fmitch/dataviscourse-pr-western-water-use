@@ -50,17 +50,23 @@ class CountyMap {
         let width =  this.data.settings.cell.width;
         let height = this.data.settings.cell.height;
         this.divided_geoJSON = divided_geoJSON;
+        d3.select("#county-map").select("svg").remove();
         let svg = d3.select("#county-map").append("svg")
             .attr('width', width)
             .attr('height', height);
         svg.append("g").attr("id", "map-layer");
         svg.append("g").attr("id", "text-layer");
 
+        let geoJSON = {features: [], type:'FeatureCollection'};
+        let stateCodes = {}
         for (let state of this.data.states){
-            let geoJSON = divided_geoJSON[state]
-            let projection = d3.geoCylindricalEqualArea()
-                .fitSize([width-10,height-10],geoJSON)
-            let path = d3.geoPath().projection(projection);
+            geoJSON.features = geoJSON.features.concat(divided_geoJSON[state].features);
+            stateCodes[+divided_geoJSON[state].features[0].properties.STATE] = state;
+        }
+        let projection = d3.geoCylindricalEqualArea()
+            .fitSize([width-10,height-10],geoJSON)
+        let path = d3.geoPath().projection(projection);
+        if (geoJSON.features.length < 70){
             d3.select("#text-layer").selectAll("text")
                 .data(geoJSON.features)
                 .join('text')
@@ -68,63 +74,67 @@ class CountyMap {
                 .attr('x', d => projection(d3.geoCentroid(d))[0])
                 .attr('y', d => projection(d3.geoCentroid(d))[1])
                 .text(d => d.properties.NAME);
-            d3.select("#map-layer").selectAll("path")
-                .data(geoJSON.features)
-                .join("path")
-                .classed("boundary", true)
-                .classed(`${state}-path`, true)
-                .attr("id", d => state+(+d.properties.COUNTY))
-                .attr("d",path)
-                .on("mouseover", d => {
-                    let county = +d.properties.COUNTY;
-                    d3.select(".tooltip")
-                        .style("opacity",0.9)
-                        .style("left",d3.event.pageX+"px")
-                        .style("top",d3.event.pageY+"px")
-                        .html(that.getTooltipInfo(state, county));
-                })
-                .on('mousemove', d => {
-                    d3.select('.tooltip')
-                        .style("left",d3.event.pageX+"px")
-                        .style("top",d3.event.pageY+"px");
-                })
-                .on("mouseout", d => {
-                    d3.select(".tooltip")
-                        .style("opacity",0);
-                })
-                .on("click", d => {
-                    let county = state+(+d.properties.COUNTY);
-                    if (that.data.settings.selectedCounties.includes(county)){
-                        let index = that.data.settings.selectedCounties.indexOf(county);
-                        that.data.settings.selectedCounties.splice(index, 1);
+        }
+        else {
+            d3.select("#text-layer").selectAll("text").remove()
+        }
+
+        d3.select("#map-layer").selectAll("path")
+            .data(geoJSON.features)
+            .join("path")
+            .attr('class', 'boundary')
+            .attr('class', d => `${stateCodes[+d.properties.STATE].replace(' ','')}-path`)
+            .attr("id", d => stateCodes[+d.properties.STATE]+(+d.properties.COUNTY))
+            .attr("d",path)
+            .on("mouseover", d => {
+                let county = +d.properties.COUNTY;
+                d3.select(".tooltip")
+                    .style("opacity",0.9)
+                    .style("left",d3.event.pageX+"px")
+                    .style("top",d3.event.pageY+"px")
+                    .html(that.getTooltipInfo(stateCodes[+d.properties.STATE], county));
+            })
+            .on('mousemove', d => {
+                d3.select('.tooltip')
+                    .style("left",d3.event.pageX+"px")
+                    .style("top",d3.event.pageY+"px");
+            })
+            .on("mouseout", d => {
+                d3.select(".tooltip")
+                    .style("opacity",0);
+            })
+            .on("click", d => {
+                let county = stateCodes[+d.properties.STATE]+(+d.properties.COUNTY);
+                if (that.data.settings.selectedCounties.includes(county)){
+                    let index = that.data.settings.selectedCounties.indexOf(county);
+                    that.data.settings.selectedCounties.splice(index, 1);
+                }
+                else{
+                    if(this.data.settings.selectedCounties.length >= 5){
+                        alert("Only 5 Counties can be selected");
                     }
                     else{
-                        if(this.data.settings.selectedCounties.length >= 5){
-                            alert("Only 5 Counties can be selected");
-                        }
-                        else{
-                            that.data.settings.selectedCounties.push(county);
-                        }
+                        that.data.settings.selectedCounties.push(county);
                     }
-                    that.updateAll();
-                })
-                .on('contextmenu', d => {
-                    d3.event.preventDefault();
-                    if (that.data.settings.focusCounty == state+(+d.properties.COUNTY))
-                        that.data.settings.focusCounty = null;
-                    else
-                        that.data.settings.focusCounty = state+(+d.properties.COUNTY);
-                    that.autoSelector.autoSelect();
-                    that.updateAll();
-                });
-        }
+                }
+                that.updateAll();
+            })
+            .on('contextmenu', d => {
+                d3.event.preventDefault();
+                if (that.data.settings.focusCounty == stateCodes[+d.properties.STATE]+(+d.properties.COUNTY))
+                    that.data.settings.focusCounty = null;
+                else
+                    that.data.settings.focusCounty = stateCodes[+d.properties.STATE]+(+d.properties.COUNTY);
+                that.autoSelector.autoSelect();
+                that.updateAll();
+            });
         this.updateMap();
     }
 
     updateMap(){
         let that = this;
         for (let state of this.data.states){
-            let counties = d3.select('#map-layer').selectAll('path').filter(`.${state}-path`);
+            let counties = d3.select('#map-layer').selectAll('path').filter(`.${state.replace(' ','')}-path`);
             counties.data(this.divided_geoJSON[state].features)
                 .transition()
                 .duration(this.data.transitionDuration)
@@ -134,7 +144,7 @@ class CountyMap {
                         return linecolorScale(d.properties.NAME);
 
                     }
-                    return that.data.colorScale(that.data.plotData[state][+d.properties.COUNTY].colorVal);
+                    return that.data.colorScale(that.data.plotData[state+(+d.properties.COUNTY)].colorVal);
                 });
         }
     }
@@ -173,7 +183,6 @@ class Map {
     drawMap(world) {
 
         var data = topojson.feature(world, world.objects.states).features;
-        console.log(data);
 
         d3.select('#map-chart-usa')
             .append('svg').attr('id', 'map-view-svg')
@@ -200,9 +209,10 @@ class Map {
 
 class Mapsmall {
 
-    constructor(data, data2,updateAll) {
+    constructor(data, data2,updateAll,redrawMap) {
         this.data2 = data2;
         this.updateAll = updateAll;
+        this.redrawMap = redrawMap;
     }
 
     drawMap(world) {
@@ -214,11 +224,11 @@ class Mapsmall {
         d3.select('#us-map')
             .append('svg').attr('id', 'map-view-svg-small');
         
-        const projection = d3.geoAlbersUsa().scale('500').translate([ 200,150]);
+        const projection = d3.geoAlbersUsa().scale('400').translate([ 175,90]);
         const path = d3.geoPath().projection(projection);
         d3.select('#map-view-svg-small')
-        .attr('width', '500px')
-        .attr('height', '300px')
+        .attr('width', '350px')
+        .attr('height', '200px')
         .append('g')
             .selectAll('path')
             .data(data)
@@ -252,6 +262,7 @@ class Mapsmall {
                            d3.select('#smallmap_'+state).attr('class','ussmallcolor');   
                         }
                     }
+                    that.redrawMap();
                     that.updateAll();
                 })
     .append("svg:title")
