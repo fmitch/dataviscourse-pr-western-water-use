@@ -27,8 +27,8 @@ class ScatterPlot {
     constructor(data, updateAll) {
 
         this.margin = { top: 20, right: 20, bottom: 40, left: 50 };
-        this.width = 500 - this.margin.left - this.margin.right;
-        this.height = 400 - this.margin.top - this.margin.bottom;
+        this.width = data.settings.cell.width - this.margin.left - this.margin.right;
+        this.height = data.settings.cell.height - this.margin.top - this.margin.bottom;
 
         this.data = data;
         this.data.plotData = {};
@@ -70,7 +70,7 @@ class ScatterPlot {
         plot.append("text")
             .classed("activeYear-background",true)
             .attr("transform",`translate(${this.width-150},${this.height-this.margin.top})`)
-            .text(this.data.activeYear);
+            .text(this.data.settings.activeYear);
         plot.append("g").attr("id","points");
         plot.append("g").classed("x-axis", true)
             .attr("id","x-axis")
@@ -88,15 +88,6 @@ class ScatterPlot {
 
         categoryWrap.append('div').attr('id', 'dropdown_category').classed('dropdown', true).append('div').classed('dropdown-content', true)
             .append('select');
-
-        /*
-        d3.select('#chart-view')
-            .append('div')
-            .classed('circle-legend', true)
-            .append('svg')
-            .append('g')
-            .attr('transform', 'translate(10, 0)');
-        */
     }
 
     /**
@@ -110,6 +101,7 @@ class ScatterPlot {
          * @returns {number} the radius
          */
         this.drawDropDown(categoryIndicator);
+        this.categoryIndicator = categoryIndicator;
 
         this.data.transitionDuration = 500;
         let state = this.data.states[0];
@@ -166,13 +158,13 @@ class ScatterPlot {
         this.data.colorScale = colorScale;
 
         let legendSvg = d3.select('#color-legend-svg');
-        legendSvg.attr('width', this.width + this.margin.left + this.margin.right)
+        legendSvg.attr('width', this.width + this.margin.left + 20)
             .attr('height', 65)
         let cellWidth = 4;
         let labelSize = Math.round(this.width/cellWidth);
         let legendSequential = d3.legendColor()
             .shapeWidth(cellWidth + 0.5)
-            .shapeHeight(20)
+            .shapeHeight(15)
             .cells(labelSize)
             .shapePadding(-0.5)
             .labelOffset(7)
@@ -181,7 +173,7 @@ class ScatterPlot {
             .labels('')
             .scale(colorScale);
         legendSvg.select('.legendSequential')
-            .attr('transform', `translate(${this.margin.left},20)`)
+            .attr('transform', `translate(${20},20)`)
             .call(legendSequential);
         legendSvg.select('.legendCells').attr('transform', `translate(${0},10)`);
         let labels = legendSvg.selectAll('.label')
@@ -303,7 +295,7 @@ class ScatterPlot {
         let sliderText = sliderLabel.append('text').text(this.data.settings.activeYear);
 
         sliderText.attr('x', yearScale(this.data.settings.activeYear));
-        sliderText.attr('y', 25);
+        sliderText.attr('y', 15);
 
         yearSlider.on('input', function () {
             //TODO - your code goes here -
@@ -384,7 +376,11 @@ class ScatterPlot {
      * @returns {string}
      */
     tooltipRender(data) {
-        let text = "<h2>" + data['county'] + "</h2>";
+        let xIndicator = this.data.settings.dropOptions[this.categoryIndicator].x;
+        let yIndicator = this.data.settings.dropOptions[this.categoryIndicator].y;
+        let text = `<h2>${data['county']} County</h2>` + 
+        `<h2>${this.data.labels[xIndicator]}: ${Number.parseFloat(data.xVal).toFixed(2)}</h2>`+
+        `<h2>${this.data.labels[yIndicator]}: ${Number.parseFloat(data.yVal).toFixed(2)}</h2>`
         return text;
     }
 

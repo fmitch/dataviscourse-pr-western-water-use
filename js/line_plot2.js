@@ -9,8 +9,8 @@ class LinePlot2 {
     constructor(data) {
 
         this.margin = { top: 20, right: 20, bottom: 60, left: 80 };
-        this.width = 500 - this.margin.left - this.margin.right;
-        this.height = 400 - this.margin.top - this.margin.bottom;
+        this.width = data.settings.cell.width - this.margin.left - this.margin.right;
+        this.height = data.settings.cell.height - this.margin.top - this.margin.bottom;
 
         this.data = data;
         this.data.plotDataLine = {};
