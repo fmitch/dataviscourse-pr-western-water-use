@@ -17,23 +17,14 @@ function toTitleCase(str) {
 }
 
 console.log(document. title);
-let states = window.states;
+//let states = window.states;
+//if (states === undefined)
+let states = ['utah']
 let allStates = ['arizona', 'california', 'colorado', 'idaho', 'montana', 
                   'nevada', 'new mexico', 'oregon','utah', 'washington', 'wyoming'];
 console.log(states);
-if (states === undefined)
-    states = ['utah', 'nevada'];
 
 loadData(allStates).then(data => {
-    let stateText = ''
-    for (let i=0; i<states.length; i++){
-        if (i===0)
-            stateText = toTitleCase(states[i]);
-        else
-            stateText += `, ${toTitleCase(states[i])}`
-    }
-    stateText += ' Water Usage'
-    d3.select('h2').text(stateText);
     data.settings = {
         selectedCounties: [],
         activeYear: '2015',
@@ -41,6 +32,7 @@ loadData(allStates).then(data => {
         focusCounty: null,
         cell: { width: 440, height: 340}
     }
+    data.allStates = allStates;
     data.settings.dropOptions = [
         {
             key: 0,
@@ -73,6 +65,7 @@ loadData(allStates).then(data => {
     console.log(data)
 
     function updateAll() {
+        console.log(data)
         let categoryValue = d3.select('#dropdown_category').select('.dropdown-content').select('select').node().value;
         scatterPlot.updatePlot(categoryValue);
         countyMap.updateMap();
@@ -126,17 +119,17 @@ loadData(allStates).then(data => {
         countyMap.drawMap(dividedCounties);
     }
 
-    async function drawMapUSA(data2,updateAll) {
+    async function drawMapUSA(data2,updateAll,drawMap) {
 
         d3.json('data/world.json').then(mapData => {
     // https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json
     // https://github.com/topojson/us-atlas
-        const worldMap = new Mapsmall(mapData, data2,updateAll );
+        const worldMap = new Mapsmall(mapData, data2,updateAll,drawMap);
         worldMap.drawMap(mapData);
         });
     }
     
     drawMap();
-    drawMapUSA(data,updateAll);
+    drawMapUSA(data,updateAll,drawMap);
 
 });

@@ -2,6 +2,10 @@
     font-family: 'Roboto', sans-serif;
 }
 
+h2 {
+    margin-top: 5px;
+}
+
 div.hidden {
     display: none
 }

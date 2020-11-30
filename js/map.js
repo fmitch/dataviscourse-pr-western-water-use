@@ -50,6 +50,7 @@ class CountyMap {
         let width =  this.data.settings.cell.width;
         let height = this.data.settings.cell.height;
         this.divided_geoJSON = divided_geoJSON;
+        d3.select("#county-map").select("svg").remove();
         let svg = d3.select("#county-map").append("svg")
             .attr('width', width)
             .attr('height', height);
@@ -74,6 +75,10 @@ class CountyMap {
                 .attr('y', d => projection(d3.geoCentroid(d))[1])
                 .text(d => d.properties.NAME);
         }
+        else {
+            d3.select("#text-layer").selectAll("text").remove()
+        }
+
         d3.select("#map-layer").selectAll("path")
             .data(geoJSON.features)
             .join("path")
@@ -134,7 +139,6 @@ class CountyMap {
                 .transition()
                 .duration(this.data.transitionDuration)
                 .attr("fill", d => {
-                    console.log(that.data.plotData[state+(+d.properties.COUNTY)])
                     if(this.data.linecolor[0]){
                         let linecolorScale =  this.data.linecolor[1];
                         return linecolorScale(d.properties.NAME);
@@ -179,7 +183,6 @@ class Map {
     drawMap(world) {
 
         var data = topojson.feature(world, world.objects.states).features;
-        console.log(data);
 
         d3.select('#map-chart-usa')
             .append('svg').attr('id', 'map-view-svg')
@@ -206,9 +209,10 @@ class Map {
 
 class Mapsmall {
 
-    constructor(data, data2,updateAll) {
+    constructor(data, data2,updateAll,redrawMap) {
         this.data2 = data2;
         this.updateAll = updateAll;
+        this.redrawMap = redrawMap;
     }
 
     drawMap(world) {
@@ -220,11 +224,11 @@ class Mapsmall {
         d3.select('#us-map')
             .append('svg').attr('id', 'map-view-svg-small');
         
-        const projection = d3.geoAlbersUsa().scale('500').translate([ 200,150]);
+        const projection = d3.geoAlbersUsa().scale('400').translate([ 175,90]);
         const path = d3.geoPath().projection(projection);
         d3.select('#map-view-svg-small')
-        .attr('width', '500px')
-        .attr('height', '300px')
+        .attr('width', '350px')
+        .attr('height', '200px')
         .append('g')
             .selectAll('path')
             .data(data)
@@ -258,6 +262,7 @@ class Mapsmall {
                            d3.select('#smallmap_'+state).attr('class','ussmallcolor');   
                         }
                     }
+                    that.redrawMap();
                     that.updateAll();
                 })
     .append("svg:title")

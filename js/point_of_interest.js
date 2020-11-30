@@ -43,6 +43,15 @@ class FocusLines {
             .attr("width", this.width + this.margin.left + this.margin.right)
             .attr("height", this.height + this.margin.top + this.margin.bottom);
 
+        d3.select('#placeholder3')
+            .append('svg').classed('placeholder3svg', true)
+            .attr("width", this.width + this.margin.left + this.margin.right)
+            .attr("height", this.height + this.margin.top + this.margin.bottom)
+            .append('text')
+            .text("Right-click a county on the map to focus")
+            .style('fill', 'red')
+            .attr("transform", "translate("+(this.margin.left+30)+","+(this.height-100)+")");
+
         let svgGroup = d3.select('#poi-line-div').select('.plot-svg').append('g').classed('wrapper-group', true).attr("transform", "translate("+this.margin.left+","+this.margin.top+")");
 
         let plot = d3.select('#poi-line-div').select(".wrapper-group")
@@ -313,5 +322,7 @@ class FocusLines {
     showLines(shouldShow){
         let div = d3.select('#poi-line-div')
             .classed('hidden', !shouldShow);
+        d3.select('#placeholder3')
+            .classed('hidden', shouldShow);
     }
 }

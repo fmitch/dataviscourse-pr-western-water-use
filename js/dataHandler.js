@@ -46,7 +46,6 @@ async function loadData(states){
     };
     data.axisVariables = {
     }
-    console.log(states);
     for (let state of states){
         data[state] = {};
         let usage = await loadFile(`data/${state}/water_use`, d3.tsv);

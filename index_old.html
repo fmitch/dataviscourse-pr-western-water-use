@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>County</title>
+    <title>Western Water Use</title>
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="grid.css" />
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
@@ -13,7 +13,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.js"></script>
     <script src="https://d3js.org/d3-geo-projection.v2.js"></script>
     <script src="js/dataHandler.js"></script>
-    <script src="js/autoSelector.js"></script>
     <script src="js/info_box.js" async></script>
     <script src="js/point_of_interest.js" async></script>
     <script src="js/water_plot.js" async></script>
@@ -21,29 +20,11 @@
     <script src="js/line_plot.js" async></script>
     <script src="js/line_plot2.js" async></script>
 
-    <script src="js/script_county.js" async></script>
+    <script src="js/script.js" async></script>
 </head>
-
 <body>
-    <div class="wrapper">
-        <div class="header">
-            <h2>State Water Usage</h2>
-            <p class="info"></p>
-        </div>
-        <div id="us-map" class='view'>US Map</div>
-        <div id="map-buttons"></div>
-        <div id="county-map"></div>
-        <div id="scatter-plot" class='view'></div>
-        <div id="poi-line-div"></div>
-        <div id="line1" class='view'></div>
-        <div id="poi-bar-div"></div>
-        <div id="line2" class='view'></div>
-        <div id="poi-legend"></div>
-        <div id="color-legend"></div>
-        <div id="line-legend"></div>
-        <div id="placeholder1" class ='hidden'></div>
-        <div id="placeholder2" class = 'hidden'></div>
-    </div>
+    <div id="map-chart-usa" class="view"></div>
+    
 </body>
 
 </html>

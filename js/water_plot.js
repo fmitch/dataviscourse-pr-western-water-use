@@ -32,7 +32,6 @@ class ScatterPlot {
         this.height = data.settings.cell.height - this.margin.top - this.margin.bottom;
 
         this.data = data;
-        this.data.plotData = {};
 
         this.updateAll = updateAll;
 
@@ -97,6 +96,7 @@ class ScatterPlot {
          * @param d the data value to encode
          * @returns {number} the radius
          */
+        this.data.plotData = {};
         this.drawDropDown(categoryIndicator);
         this.categoryIndicator = categoryIndicator;
 
@@ -150,7 +150,7 @@ class ScatterPlot {
             .style("text-anchor", "middle")
             .attr("transform", "translate(-35,"+(this.height/2)+") rotate(-90)");
         let yAxis = d3.select("#y-axis").call(d3.axisLeft(yScale));
-        let colorScale = d3.scaleSequential().domain([colorMin, colorMax])
+        let colorScale = d3.scaleSequential().domain([10, 500])
             .interpolator(d3.interpolateBlues);
         this.data.colorScale = colorScale;
 
