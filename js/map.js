@@ -198,19 +198,71 @@ class Map {
     //.attr("fill", d => colorScale(d => +d.count.split(",").join("")))
     .attr("fill-opacity", 1)
     .attr("stroke", "black")
-    .attr("id",d => d.properties.name);
+    .attr("id",d => d.properties.name)
 
     }
 
-    updateHighlightClick(activeCountry) {
-
-    }
-
-    /**
-     * Clears all highlights
-     */
-    clearHighlight() {
-
-    }
 }
 
+class Mapsmall {
+
+    constructor(data, data2,updateAll) {
+        this.data2 = data2;
+        this.updateAll = updateAll;
+    }
+
+    drawMap(world) {
+        var that = this;
+        var data = topojson.feature(world, world.objects.states).features;
+        // console.log(data);
+        // console.log(this.data2);
+
+        d3.select('#us-map')
+            .append('svg').attr('id', 'map-view-svg-small');
+        
+        const projection = d3.geoAlbersUsa().scale('500').translate([ 200,150]);
+        const path = d3.geoPath().projection(projection);
+        d3.select('#map-view-svg-small')
+        .attr('width', '500px')
+        .attr('height', '300px')
+        .append('g')
+            .selectAll('path')
+            .data(data)
+            .enter()
+            .append('path')
+            .attr('d', path)
+    .attr("fill-opacity", 1)
+    .attr("class", function(d){
+                if(that.data2.states.indexOf(String(d.properties.name.toLowerCase())) == -1 ){
+                    return 'ussmalldefault'
+                }
+                return 'ussmallcolor'
+            })
+    .attr("stroke", "black")
+    .attr("id",d => 'smallmap_'+d.properties.name.toLowerCase())
+    .on("click", d => {
+                    let state = String(d.properties.name.toLowerCase());
+                        console.log(d3.select('#smallmap_'+'new mexico'));
+
+                    if (that.data2.states.includes(state)){
+                        let index = that.data2.states.indexOf(state);
+                        that.data2.states.splice(index, 1);
+                        d3.select('#smallmap_'+state).attr('class','ussmalldefault');
+                    }
+                    else{
+                        if(that.data2.states.length >= 2){
+                            alert("Only 2 States can be selected");
+                        }
+                        else{
+                           that.data2.states.push(state);
+                           d3.select('#smallmap_'+state).attr('class','ussmallcolor');   
+                        }
+                    }
+                    that.updateAll();
+                })
+    .append("svg:title")
+    .text(function(d, i) { return d.properties.name; });
+
+    }
+
+}

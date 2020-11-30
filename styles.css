@@ -357,4 +357,31 @@ div.tooltip {
     margin: auto;
 }
 
+/*#us-map {
+    height: 100%;
+    width : 100%;
+}
 
+
+#us-map svg {
+    width: 100%;
+    height: 100%;
+    margin: auto;
+}*/
+
+#us-map svg {
+    margin: 0;
+}
+
+.ussmallcolor{
+     fill: #00FFFF;
+}
+
+.ussmalldefault{
+     fill: #FFFFFF;
+}
+
+
+#placeholder1 text{
+    font-size: large;
+}
