@@ -18,9 +18,6 @@ class DataPointLine {
 /** Class representing the scatter plot view. */
 class LinePlot {
 
-    /**
-     * @param updateAll a callback function used to notify other parts of the program when a year was updated
-     */
     constructor(data) {
 
         this.margin = { top: 20, right: 20, bottom: 60, left: 80 };
@@ -32,30 +29,15 @@ class LinePlot {
         for (let state of this.data.states){
             this.data.plotDataLine[state] = {};
         }
-        // this.buttonclick = buttonclick;
+
         this.linecolorScale = '';
+        this.countyname = [];
 
     }
 
-    /**
-     * Sets up the plot, axes, and slider,
-     */
 
     drawPlot(viewer) {
         let that = this;
-        // console.log("LIne chart");
-        // console.log(this.data.labels);
-        // let toggleheader = d3.select("#line1")
-        //     .append("div").attr("id", "toggle-header");
-
-        // //reference : w3 school : https://www.w3schools.com/howto/howto_css_switch.asp
-        // toggleheader.html('Color the MAP: <input id="checkboxbtn" type="checkbox">');
-    
-        // d3.select("#checkboxbtn")
-        //     .on("click",function(){
-        //     that.buttonclick();
-        // });
-
 
         d3.select('#line1')
             .append('div').attr('id', 'line-chart-view');
@@ -93,59 +75,46 @@ class LinePlot {
             .append('text')
             .text('Axis selection');
 
-        // yWrap.append('div').attr('id', 'dropdown_y-line').classed('dropdown', true).append('div').classed('dropdown-content', true)
-        //     .append('select');
-
     }
 
-    /**
-     * Renders the plot for the parameters specified
-     *
-     * @param xIndicator identifies the values to use for the x axis
-     * @param yIndicator identifies the values to use for the y axis
-     * @param circleSizeIndicator identifies the values to use for the circle size
-     */
+    
     updatePlot(yIndicator) {
-        /**
-         * @param d the data value to encode
-         * @returns {number} the radius
-         */
-        // let circleSizer = function (d) {
-        //     let cScale = d3.scaleSqrt().range([3, 20]).domain([minSize, maxSize]);
-        //     return d.circleSize ? cScale(d.circleSize) : 3;
-        // };
         
         yIndicator = this.data.settings.dropOptions[yIndicator].y;
 
         this.data.transitionDuration = 500;
         let state = this.data.states[0];
         let activeYear = this.data.settings.activeYear
-        let selectedcounties = [];
-        if(this.data.settings.selectedCounties){
-            selectedcounties = this.data.settings.selectedCounties;
-        }
-        if(this.data.settings.focusCounty){
-            selectedcounties.push(this.data.settings.focusCounty);
+        
+        this.countyname = [];
+
+        for (let x of this.data.settings.selectedCounties){
+            for (let state of this.data.states){
+                for (let countyID in this.data[state]){
+                    if(x == 'utah'+String(countyID)){
+                        let county = this.data[state][countyID];
+                        this.countyname.push(county.name);
+                    }
+                }
+            }
         }
         
         let yMax = 0;
         let colorMax = 0;
         let yMin = 100000;
-        // let yMin = this.data[state][Object.keys(this.data[state])[0]][activeYear][yIndicator];
-        // let rMin = this.data[state][Object.keys(this.data[state])[0]][activeYear][circleSizeIndicator];
         let colorMin = yMin;
         this.regions = {}
         let lineData = {};
-        let countyname = [];
+        // let countyname = [];
         for (let state of this.data.states){
             for (let countyID in this.data[state]){
                 let county = this.data[state][countyID];
-                if(selectedcounties.indexOf('utah'+String(countyID)) == -1 ){
+                if(this.data.settings.selectedCounties.indexOf('utah'+String(countyID)) == -1 ){
                     continue;
                 }
                 let valy = [];
                 lineData[county.name] = [];
-                countyname.push(county.name);
+                // countyname.push(county.name);
                 for (let i = 1985; i<=2015; i+=5){
                     let value = county[i][yIndicator];
                     let year = i;
@@ -188,13 +157,6 @@ class LinePlot {
             .style("text-anchor", "middle")
             .attr("transform", "translate(-65,"+(this.height/2)+") rotate(-90)");
         let yAxis = d3.select("#y-axis-line").call(d3.axisLeft(yScale));
-        // let colorScale = d3.scaleSequential().domain([colorMin, colorMax])
-        //     .interpolator(d3.interpolateBlues);
-        // this.data.colorScale = colorScale;
-
-
-        // let minSize = rMin;
-        // let maxSize = rMax;
 
         console.log("---------------------");
         console.log(this.data.plotDataLine[state]);
@@ -202,21 +164,10 @@ class LinePlot {
         let lineGen = d3.line()
                 .x(d => xScale(d.year))
                 .y(d => yScale(d.value));
-        // Data are categories (each line that is drawn), serves as key to lineData[key] for lineGen
-
-        //color list reference: https://jnnnnn.blogspot.com/2017/02/distinct-colours-2.html
-        // let color_scale = d3.scaleOrdinal().domain(countyname).range(["#1b70fc", "#faff16", "#d50527", "#158940", "#f898fd", "#24c9d7", "#cb9b64", "#866888", "#22e67a",
-        //  "#e509ae", "#9dabfa", "#437e8a", "#b21bff", "#ff7b91", "#94aa05", "#ac5906", "#82a68d", "#fe6616", "#7a7352", "#f9bc0f", "#b65d66", "#07a2e6", "#c091ae",
-        //   "#8a91a7", "#88fc07", "#ea42fe", "#9e8010", "#10b437", "#c281fe", "#f92b75", "#07c99d", "#a946aa", "#bfd544", "#16977e", "#ff6ac8", "#a88178", "#5776a9",
-        //    "#678007", "#fa9316", "#85c070", "#6aa2a9", "#989e5d", "#fe9169", "#cd714a", "#6ed014", "#c5639c", "#c23271", "#698ffc", "#678275", "#c5a121", "#a978ba",
-        //     "#ee534e", "#d24506", "#59c3fa", "#ca7b0a", "#6f7385", "#9a634a", "#48aa6f", "#ad9ad0", "#d7908c", "#6a8a53", "#8c46fc", "#8f5ab8", "#fd1105", "#7ea7cf",
-        //      "#d77cd1", "#a9804b", "#0688b4", "#6a9f3e", "#ee8fba", "#a67389", "#9e8cfe", "#bd443c", "#6d63ff", "#d110d5", "#798cc3", "#df5f83", "#b1b853", "#bb59d8",
-        //       "#1d960c", "#867ba8", "#18acc9", "#25b3a7", "#f3db1d", "#938c6d", "#936a24", "#a964fb", "#92e460", "#a05787", "#9c87a0", "#20c773", "#8b696d", "#78762d",
-        //        "#e154c6", "#40835f", "#d73656", "#1afd5c", "#c4f546", "#3d88d8", "#bd3896", "#1397a3", "#f940a5", "#66aeff", "#d097e7", "#fe6ef9", "#d86507", "#8b900a",
-        //         "#d47270", "#e8ac48", "#cf7c97", "#cebb11", "#718a90", "#e78139", "#ff7463", "#bea1fd"]);
-        this.linecolorScale = d3.scaleOrdinal().domain(countyname).range(d3.schemeTableau10);
-        console.log(countyname);
-        let lineGroup = d3.select('#lines').selectAll('path').data(countyname);
+        
+        this.linecolorScale = d3.scaleOrdinal().domain(this.countyname).range(d3.schemeTableau10);
+        console.log(this.countyname);
+        let lineGroup = d3.select('#lines').selectAll('path').data(this.countyname);
         console.log(lineGroup);
         lineGroup.join('path')
         .attr("fill",'none')
@@ -233,74 +184,34 @@ class LinePlot {
         lineGroup.exit().remove();
 
         d3.select('#line1-y-label').text(this.data.labels[yIndicator]);
-        //this.drawLegend(rMin, rMax);
+        this.drawLegend();
         // this.drawDropDown(yIndicator);
         
     }
 
-    /**
-     * Setting up the drop-downs
-     * @param xIndicator identifies the values to use for the x axis
-     * @param yIndicator identifies the values to use for the y axis
-     * @param circleSizeIndicator identifies the values to use for the circle size
-     */
-    drawDropDown(yIndicator) {
+    
+    drawLegend() {
+         var that = this;
+         d3.select('#line-legend').selectAll('svg').remove();
+        let legendsvg = d3.select('#line-legend')
+            .append('svg').classed('plot-svg-line-legend', true)
+            .attr("width", this.margin.left + this.width)
+            .attr("height", 300 + this.margin.top + this.margin.bottom);
+        var lineLegend = d3.select('.plot-svg-line-legend')
+            .selectAll(".lineLegend")
+            .data(this.countyname)
+            .enter()
+            .append("g")
+            .attr("transform", function (d,i) {
+                    return "translate(" + (that.width - 50) + "," + (10 + i*20)+")";
+                });
+        lineLegend.append("rect")
+            .attr("fill", function (d, i) {return that.linecolorScale(d); })
+            .attr("width", 12)
+            .attr("height", 12);
 
-        let that = this;
-        let dropDownWrapper = d3.select('.dropdown-wrapper-line');
-        let dropData = [];
-
-        let obj = this.data[this.data.states[0]][1][this.data.settings.activeYear];
-        for (let key in obj) {
-            dropData.push({
-                indicator: key,
-                indicator_name: key
-            });
+        lineLegend.append("text").text(function (d) {return d;})
+            .attr("transform", "translate(17,11)"); //align texts with boxes
         }
-
-        
-        /* Y DROPDOWN */
-        let dropY = dropDownWrapper.select('#dropdown_y-line').select('.dropdown-content').select('select');
-
-        let optionsY = dropY.selectAll('option')
-            .data(dropData);
-
-        optionsY.exit().remove();
-
-        let optionsYEnter = optionsY.enter()
-            .append('option')
-            .attr('value', (d, i) => d.indicator);
-
-        optionsY = optionsYEnter.merge(optionsY);
-
-        optionsYEnter.append('text')
-            .text((d, i) => d.indicator_name);
-
-        let selectedY = optionsY.filter(d => d.indicator === yIndicator)
-            .attr('selected', true);
-
-        dropY.on('change', function (d, i) {
-            that.updateAllLine();
-        });
-
-    }
-
-    /**
-     * Reacts to a highlight/click event for a county; draws that county darker
-     * and fades counties on other continents out
-     */
-    updateHighlightClick() {
-        
-    }
-
-    /**
-     * Returns html that can be used to render the tooltip.
-     * @param data 
-     * @returns {string}
-     */
-    tooltipRender(data) {
-        let text = "<h2>" + data['county'] + "</h2>";
-        return text;
-    }
 
 }

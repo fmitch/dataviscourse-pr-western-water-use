@@ -18,6 +18,7 @@ class LinePlot2 {
             this.data.plotDataLine[state] = {};
         }
         this.linecolorScale ='';
+        this.countyname = [];
 
     }
 
@@ -27,8 +28,6 @@ class LinePlot2 {
 
     drawPlot(viewer) {
         let that = this;
-        // console.log("LIne chart");
-        // console.log(this.data.labels);
         
 
         d3.select('#line2')
@@ -69,40 +68,30 @@ class LinePlot2 {
 
     }
 
-    /**
-     * Renders the plot for the parameters specified
-     *
-     * @param xIndicator identifies the values to use for the x axis
-     * @param yIndicator identifies the values to use for the y axis
-     * @param circleSizeIndicator identifies the values to use for the circle size
-     */
     updatePlot(yIndicator) {
-        /**
-         * @param d the data value to encode
-         * @returns {number} the radius
-         */
-        // let circleSizer = function (d) {
-        //     let cScale = d3.scaleSqrt().range([3, 20]).domain([minSize, maxSize]);
-        //     return d.circleSize ? cScale(d.circleSize) : 3;
-        // };
+        
         yIndicator = this.data.settings.dropOptions[yIndicator].x;
         this.data.transitionDuration = 500;
         let state = this.data.states[0];
         let activeYear = this.data.settings.activeYear
-        let selectedcounties = [];
-        if(this.data.settings.selectedCounties){
-            selectedcounties = this.data.settings.selectedCounties;
-        }
-        if(this.data.settings.focusCounty){
-            selectedcounties.push(this.data.settings.focusCounty);
-        }
+        // let selectedcounties = [];
+        this.countyname = [];
 
+        for (let x of this.data.settings.selectedCounties){
+            for (let state of this.data.states){
+                for (let countyID in this.data[state]){
+                    if(x == 'utah'+String(countyID)){
+                        let county = this.data[state][countyID];
+                        this.countyname.push(county.name);
+                    }
+                }
+            }
+        }
+        
         
         let yMax = 0;
         let colorMax = 0;
         let yMin = 100000;
-        // let yMin = this.data[state][Object.keys(this.data[state])[0]][activeYear][yIndicator];
-        // let rMin = this.data[state][Object.keys(this.data[state])[0]][activeYear][circleSizeIndicator];
         let colorMin = yMin;
         this.regions = {}
         let lineData = {};
@@ -110,20 +99,17 @@ class LinePlot2 {
         for (let state of this.data.states){
             for (let countyID in this.data[state]){
                 let county = this.data[state][countyID];
-                if(selectedcounties.indexOf('utah'+String(countyID)) == -1 ){
+                if(this.data.settings.selectedCounties.indexOf('utah'+String(countyID)) == -1 ){
                     continue;
                 }
                 let valy = [];
                 lineData[county.name] = [];
-                countyname.push(county.name);
                 for (let i = 1985; i<=2015; i+=5){
                     let value = county[i][yIndicator];
                     let year = i;
-                    // valy.push(county[i][yIndicator]);
                     
                     lineData[county.name].push({value: value,
                                  year: year});
-                    // console.log(county[i][yIndicator]);
                     if (+county[i][yIndicator] > yMax)
                         yMax = +county[i][yIndicator];
                     if (+county[i][yIndicator] < yMin)
@@ -140,7 +126,7 @@ class LinePlot2 {
 
             }
         }
-        // console.log(this.data.plotDataLine[state]);
+        
         let xMin = 1985;
         let xMax = 2015;
 
@@ -158,13 +144,7 @@ class LinePlot2 {
             .style("text-anchor", "middle")
             .attr("transform", "translate(-65,"+(this.height/2)+") rotate(-90)");
         let yAxis = d3.select("#y-axis-line2").call(d3.axisLeft(yScale));
-        // let colorScale = d3.scaleSequential().domain([colorMin, colorMax])
-        //     .interpolator(d3.interpolateBlues);
-        // this.data.colorScale = colorScale;
-
-
-        // let minSize = rMin;
-        // let maxSize = rMax;
+        
 
         console.log("---------------------");
         console.log(this.data.plotDataLine[state]);
@@ -175,9 +155,9 @@ class LinePlot2 {
         // Data are categories (each line that is drawn), serves as key to lineData[key] for lineGen
 
         //color list reference: https://jnnnnn.blogspot.com/2017/02/distinct-colours-2.html
-        this.linecolorScale = d3.scaleOrdinal().domain(countyname).range(d3.schemeTableau10);
-        console.log(countyname);
-        let lineGroup = d3.select('#lines2').selectAll('path').data(countyname);
+        this.linecolorScale = d3.scaleOrdinal().domain(this.countyname).range(d3.schemeTableau10);
+        console.log(this.countyname);
+        let lineGroup = d3.select('#lines2').selectAll('path').data(this.countyname);
         console.log(lineGroup);
         lineGroup.join('path')
         .attr("fill",'none')
@@ -194,74 +174,10 @@ class LinePlot2 {
         lineGroup.exit().remove();
 
         d3.select('#line2-y-label').text(this.data.labels[yIndicator]);
-        //this.drawLegend(rMin, rMax);
-        // this.drawDropDown(yIndicator);
+       
     }
 
-    /**
-     * Setting up the drop-downs
-     * @param xIndicator identifies the values to use for the x axis
-     * @param yIndicator identifies the values to use for the y axis
-     * @param circleSizeIndicator identifies the values to use for the circle size
-     */
-    drawDropDown(yIndicator) {
-
-        let that = this;
-        let dropDownWrapper = d3.select('.dropdown-wrapper-line2');
-        let dropData = [];
-
-        let obj = this.data[this.data.states[0]][1][this.data.settings.activeYear];
-        for (let key in obj) {
-            dropData.push({
-                indicator: key,
-                indicator_name: key
-            });
-        }
-
-        
-        /* Y DROPDOWN */
-        let dropY = dropDownWrapper.select('#dropdown_y-line2').select('.dropdown-content').select('select');
-
-        let optionsY = dropY.selectAll('option')
-            .data(dropData);
-
-        optionsY.exit().remove();
-
-        let optionsYEnter = optionsY.enter()
-            .append('option')
-            .attr('value', (d, i) => d.indicator);
-
-        optionsY = optionsYEnter.merge(optionsY);
-
-        optionsYEnter.append('text')
-            .text((d, i) => d.indicator_name);
-
-        let selectedY = optionsY.filter(d => d.indicator === yIndicator)
-            .attr('selected', true);
-
-        dropY.on('change', function (d, i) {
-            that.updateAllLine2();
-        });
-
-    }
-
-    /**
-     * Reacts to a highlight/click event for a county; draws that county darker
-     * and fades counties on other continents out
-     */
-    updateHighlightClick() {
-        
-    }
-
-    /**
-     * Returns html that can be used to render the tooltip.
-     * @param data 
-     * @returns {string}
-     */
-    tooltipRender(data) {
-        let text = "<h2>" + data['county'] + "</h2>";
-        return text;
-    }
+    
 
 
 
