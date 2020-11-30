@@ -47,6 +47,23 @@ class LinePlot {
             .attr("width", this.width + this.margin.left + this.margin.right)
             .attr("height", this.height + this.margin.top + this.margin.bottom);
 
+        d3.select('#placeholder1')
+            .append('svg').classed('placeholder1svg', true)
+            .attr("width", this.width + this.margin.left + this.margin.right)
+            .attr("height", this.height + this.margin.top + this.margin.bottom)
+            .append('text')
+            .text("Select a county on the map to start")
+            .style('fill', 'red')
+            .attr("transform", "translate("+(this.margin.left+30)+","+(this.height-100)+")");
+        d3.select('#placeholder2')
+            .append('svg').classed('placeholder1svg', true)
+            .attr("width", this.width + this.margin.left + this.margin.right)
+            .attr("height", this.height + this.margin.top + this.margin.bottom)
+            .append('text')
+            .text("Select a county on the map to start")
+            .style('fill', 'red')
+            .attr("transform", "translate("+(this.margin.left+30)+","+(this.height-100)+")");
+
         let svgGroup = d3.select('#line-chart-view').select('.plot-svg').append('g').classed('line-wrapper-group', true).attr("transform", "translate("+this.margin.left+","+this.margin.top+")");
 
         let plot = d3.select(".line-wrapper-group")
@@ -74,7 +91,7 @@ class LinePlot {
             .attr('id','line1-y-label')
             .append('text')
             .text('Axis selection');
-
+        this.updateplaceholder();
     }
 
     
@@ -185,7 +202,7 @@ class LinePlot {
 
         d3.select('#line1-y-label').text(this.data.labels[yIndicator]);
         this.drawLegend();
-        // this.drawDropDown(yIndicator);
+        this.updateplaceholder();
         
     }
 
@@ -213,5 +230,18 @@ class LinePlot {
         lineLegend.append("text").text(function (d) {return d;})
             .attr("transform", "translate(17,11)"); //align texts with boxes
         }
+
+
+    updateplaceholder(){
+        if(this.countyname.length <1){
+            d3.select('#placeholder1').classed('hidden',false);
+            d3.select('#placeholder2').classed('hidden',false);
+        }
+        else{
+            d3.select('#placeholder1').classed('hidden',true);
+            d3.select('#placeholder2').classed('hidden',true);
+        }
+
+    }
 
 }

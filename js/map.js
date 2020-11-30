@@ -244,8 +244,13 @@ class Mapsmall {
                         d3.select('#smallmap_'+state).attr('class','ussmalldefault');
                     }
                     else{
+                        if(that.data2.states.length >= 2){
+                            alert("Only 2 States can be selected");
+                        }
+                        else{
                            that.data2.states.push(state);
                            d3.select('#smallmap_'+state).attr('class','ussmallcolor');   
+                        }
                     }
                     that.updateAll();
                 })

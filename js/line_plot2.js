@@ -29,7 +29,9 @@ class LinePlot2 {
     drawPlot(viewer) {
         let that = this;
         
-
+        // if(this.countyname.length <1){
+        //     d3.select('#placeholder2').classed('hidden',false);
+        // }
         d3.select('#line2')
             .append('div').attr('id', 'line-chart-view2');
 
@@ -37,6 +39,15 @@ class LinePlot2 {
             .append('svg').classed('plot-svg', true)
             .attr("width", this.width + this.margin.left + this.margin.right)
             .attr("height", this.height + this.margin.top + this.margin.bottom);
+
+        // d3.select('#placeholder2')
+        //     .append('svg').classed('placeholder1svg', true)
+        //     .attr("width", this.width + this.margin.left + this.margin.right)
+        //     .attr("height", this.height + this.margin.top + this.margin.bottom)
+        //     .append('text')
+        //     .text("Select a county on the map to start")
+        //     .style('fill', 'red')
+        //     .attr("transform", "translate("+(this.margin.left+30)+","+(this.height-100)+")");
 
         let svgGroup = d3.select('#line-chart-view2').select('.plot-svg').append('g').classed('line-wrapper-group2', true).attr("transform", "translate("+this.margin.left+","+this.margin.top+")");
 
