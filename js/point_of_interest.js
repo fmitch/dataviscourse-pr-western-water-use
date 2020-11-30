@@ -3,9 +3,9 @@ class FocusLines {
 
     constructor(data) {
 
-        this.margin = { top: 20, right: 20, bottom: 20, left: 50 };
-        this.width = 450 - this.margin.left - this.margin.right;
-        this.height = 400 - this.margin.top - this.margin.bottom;
+        this.margin = { top: 20, right: 80, bottom: 50, left: 70 };
+        this.width = data.settings.cell.width - this.margin.left - this.margin.right;
+        this.height = data.settings.cell.height - this.margin.top - this.margin.bottom;
 
         this.data = data;
         let categories = Object.keys(this.data['utah'][1][1985]);
@@ -18,6 +18,18 @@ class FocusLines {
             }
         }
         this.colorScale = d3.scaleOrdinal().domain(this.water_categories).range(d3.schemeTableau10);
+    }
+
+    getTooltipInfo(x){
+        let currentState = x.replace(/[0-9]/g, '');
+        let currentCounty = +x.replace(/[A-z]/g, '');
+
+        let html = `<h2>${this.data[currentState][currentCounty].name} County</h2>`;  
+        for (let i = 0; i<this.water_categories.length; i++) {
+            let value = Number(this.data[currentState][currentCounty][this.data.settings.activeYear][this.water_categories[i]]).toFixed(2);
+            html += `<h2>${this.category_labels[i].replace('Water Usage, in ', '(') + ')'}: ${value}</h2>`
+        }
+        return html;
     }
 
     /**
@@ -67,14 +79,18 @@ class FocusLines {
         plot.append('g').classed('x-axis', true)
             .attr("id","poi-bar-x-axis")
             .attr("transform","translate(0,"+this.height+ ")");
-        plot.append("text").classed("poi-bar-axis-label-x",true);
+        plot.append("text").attr('id','poi-bar-axis-label-x');
         // Add group for y-axis
         plot.append("g").classed("y-axis", true)
             .attr("id","poi-bar-y-axis");
         plot.append("text").classed("poi-bar-axis-label-y",true);
+        plot.append("g").classed("right-axis", true)
+            .attr("id","poi-bar-right-axis");
+        plot.append("text").attr('id', "poi-bar-right-axis-label",true);
     }
 
     updateBars() {
+        let that = this;
         let selectedCounties = this.data.settings.selectedCounties.slice();
         selectedCounties.sort((a,b) => +a.replace(/[A-z]/g, '') - +b.replace(/[A-z]/g, ''))
         if (this.data.settings.focusCounty !== null)
@@ -104,8 +120,7 @@ class FocusLines {
         }
 
         let xScale = d3.scaleLinear().range([0,this.width]).domain([0,1]).nice();
-        let axisXLabel = d3.select('#poi-bars')
-            .select(".poi-bar-axis-label-x")
+        let axisXLabel = d3.select("#poi-bar-axis-label-x")
             .text('Percentage of Water Used')
             .style("text-anchor", "middle")
             .attr("transform", "translate("+this.width/2+","+(this.height+35)+")");
@@ -125,15 +140,26 @@ class FocusLines {
                 let currentCounty = +x.replace(/[A-z]/g, '');
                 return this.data[currentState][currentCounty].name;
             }));
-        
+        d3.select('#poi-bar-div').select('.wrapper-group').select('.y-axis')
+            .attr("transform", `translate(0,${-bandScale.bandwidth()/2})`)
+            .call(d3.axisLeft(bandScale).tickFormat(x => {
+                let currentState = x.replace(/[0-9]/g, '');
+                let currentCounty = +x.replace(/[A-z]/g, '');
+                return this.data[currentState][currentCounty].name;
+            }));
+
         d3.select('#poi-bar-div').select('.wrapper-group').select('.y-axis').select('.domain').remove();
 
-        /*
-        axisYLabel.text('Million Gallons per day')
+        d3.select('#poi-bar-div').select('.wrapper-group').select('.right-axis')
+            .attr("transform", `translate(${this.width},${-bandScale.bandwidth()/2})`)
+            .call(d3.axisRight(bandScale).tickFormat(x => {
+                return Number.parseFloat(totalWater[x]).toFixed(2);
+            }));
+        d3.select("#poi-bar-right-axis-label")
+            .text('Total Water Usage, Mgal/day')
             .style("text-anchor", "middle")
-            .attr("transform", "translate(-35,"+(this.height/2)+") rotate(-90)");
-        let yAxis = d3.select("#poi-bar-y-axis").call(d3.axisLeft(yScale));
-        */
+            .attr("transform", `translate(${this.margin.left+this.width-20},${this.height/2}) rotate(90)`);
+        d3.select('#poi-bar-div').select('.wrapper-group').select('.right-axis').select('.domain').remove();
 
         let rectGroup = d3.select('#poi-bars').selectAll('rect').data(barData);
         rectGroup.join('rect')
@@ -142,8 +168,25 @@ class FocusLines {
             .attr('height', d => yScale(totalWater[d.county]))
             .attr('width', d => xScale(d.value/totalWater[d.county]))
             .attr('fill', d => this.colorScale(d.category))
+            .on("mouseover", d => {
+                let county = d.county;
+                d3.select(".tooltip")
+                    .style("opacity",0.9)
+                    .style("left",d3.event.pageX+"px")
+                    .style("top",d3.event.pageY+"px")
+                    .html(that.getTooltipInfo(county));
+            })
+            .on('mousemove', d => {
+                d3.select(".tooltip")
+                    .style("left",d3.event.pageX+"px")
+                    .style("top",d3.event.pageY+"px");
+            })
+            .on("mouseout", d => {
+                d3.select(".tooltip")
+                    .style("opacity",0);
+            })
             .transition()
-            .duration(this.data.transitionDuration);
+            .duration(this.data.transitionDuration)
         rectGroup.exit().remove();
 
     }
@@ -162,6 +205,7 @@ class FocusLines {
             else
                 this.showLegend(false);
             this.showLines(false);
+            this.showBars(false);
             return;
         }
         let focusState = county.replace(/[0-9]/g, '');
@@ -228,6 +272,7 @@ class FocusLines {
         d3.select("#poi-county-title").text(this.data[focusState][focusCounty].name);
         this.showLegend(true);
         this.showLines(true);
+        this.showBars(true);
     }
 
     /**
@@ -244,6 +289,8 @@ class FocusLines {
             .append('g')
             .attr("transform", `translate(${this.margin.left},${0})`);
         let legendOrdinal = d3.legendColor()
+            .shapeWidth(8)
+            .shapeHeight(8)
             .scale(this.colorScale)
             .labels(this.category_labels);
         legendGroup.call(legendOrdinal);

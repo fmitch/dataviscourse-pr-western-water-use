@@ -32,6 +32,14 @@ class CountyMap {
         this.autoSelector = new AutoSelector(this.data, this.updateAll);
     }
 
+    getTooltipInfo(state, county) {
+        let html = `<h2>${this.data[state][county].name} County</h2>` +  
+            `<h2>Population: ${this.data[state][county][this.data.settings.activeYear].population*1000} </h2>` +  
+            `<h2>Annual Precipitation: ${this.data[state][county][this.data.settings.activeYear].precip} inches </h2>` +
+            `<h2>Average Temperature: ${this.data[state][county][this.data.settings.activeYear].temp} F </h2>`
+        return html
+    }
+
     /**
      * Renders the map
      * @param world the jso5 data with the shape of all counties and a string for the activeYear
@@ -39,21 +47,19 @@ class CountyMap {
     drawMap(divided_geoJSON) {
         //note that projection is global!
         let that = this;
-        let width =  500;
-        let height = 500;
+        let width =  this.data.settings.cell.width;
+        let height = this.data.settings.cell.height;
         this.divided_geoJSON = divided_geoJSON;
-        let mapDiv = document.getElementById("county-map");
         let svg = d3.select("#county-map").append("svg")
-            .attr('viewBox', `0 0 ${width} ${height}`);
+            .attr('width', width)
+            .attr('height', height);
         svg.append("g").attr("id", "map-layer");
         svg.append("g").attr("id", "text-layer");
 
         for (let state of this.data.states){
             let geoJSON = divided_geoJSON[state]
             let projection = d3.geoCylindricalEqualArea()
-                .translate([width/2, height/2])
                 .fitSize([width-10,height-10],geoJSON)
-                //.scale([500]);
             let path = d3.geoPath().projection(projection);
             d3.select("#text-layer").selectAll("text")
                 .data(geoJSON.features)
@@ -69,6 +75,23 @@ class CountyMap {
                 .classed(`${state}-path`, true)
                 .attr("id", d => state+(+d.properties.COUNTY))
                 .attr("d",path)
+                .on("mouseover", d => {
+                    let county = +d.properties.COUNTY;
+                    d3.select(".tooltip")
+                        .style("opacity",0.9)
+                        .style("left",d3.event.pageX+"px")
+                        .style("top",d3.event.pageY+"px")
+                        .html(that.getTooltipInfo(state, county));
+                })
+                .on('mousemove', d => {
+                    d3.select('.tooltip')
+                        .style("left",d3.event.pageX+"px")
+                        .style("top",d3.event.pageY+"px");
+                })
+                .on("mouseout", d => {
+                    d3.select(".tooltip")
+                        .style("opacity",0);
+                })
                 .on("click", d => {
                     let county = state+(+d.properties.COUNTY);
                     if (that.data.settings.selectedCounties.includes(county)){

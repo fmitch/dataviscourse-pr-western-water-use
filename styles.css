@@ -6,6 +6,10 @@ div.hidden {
     display: none
 }
 
+text.label{
+    font-size: small;
+}
+
 
 
 /*Element Styling*/
@@ -57,45 +61,6 @@ circle.hidden {
 
 path.hidden {
     opacity: .4;
-}
-
-
-/*ID Styling*/
-
-#county-detail {
-    display: inline-block;
-    height: 100px;
-    margin: auto;
-    position: relative;
-    padding-left: 30px;
-}
-
-#county-detail .stat {
-    font-style: bold;
-    display: block;
-    width: 500px;
-}
-
-#county-detail .stats span {
-    font-weight: bold;
-}
-
-#county-detail div.label {
-    font-size: 26px;
-    display: block;
-    width: 100%;
-    padding-top: 10px;
-}
-
-#county-detail div.label span {
-    font-size: 22px;
-    padding-bottom: 15px;
-    font-weight: bold;
-}
-
-#map-chart {
-    height: 450px;
-    width: 400px;
 }
 
 #scatter-plot {
@@ -171,18 +136,18 @@ path.hidden {
 }
 
 .header {
-    width: 600px;
     margin: auto;
     text-align: center;
 }
 
 .wrapper {
-    width: 1600px;
+    width: 1400px;
+    height: 800px;
     margin: 20px;
 }
 
 .view {
-    width: 500px;
+    width: 300px;
     /*margin: auto;*/
     padding: 5px;
     display: inline-block;
@@ -216,28 +181,13 @@ div.toggle-panel {
 div.dropdown-wrapper {
     display: flexbox;
     margin-left: 50px;
-    padding: 20px;
 }
 
 .dropdown {
+    margin-left: 60px;
     float: left;
 }
 
-div.dropdown-wrapper-line {
-    display: flexbox;
-    margin-left: 75px;
-    padding: 20px;
-}
-
-div.dropdown-wrapper-line2 {
-    display: flexbox;
-    margin-left: 75px;
-    padding: 20px;
-}
-
-.dropdown-line {
-    float: right;
-}
 
 .y-label,
 .x-label,
@@ -318,29 +268,28 @@ div.dropdown-wrapper-line2 {
 
 .slider {
     -webkit-appearance: none;
-    width: 440px;
-    height: 15px;
+    width: 390px;
+    height: 10px;
     border-radius: 5px;
     background: #d3d3d3;
     outline: none;
     opacity: 0.7;
     -webkit-transition: .2s;
-    transition: opacity .2s;
 }
 
 .slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 25px;
-    height: 25px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
     background: #658eda;
     cursor: pointer;
 }
 
 .slider::-moz-range-thumb {
-    width: 25px;
-    height: 25px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
     background: #90a5eb;
     cursor: pointer;
@@ -352,7 +301,7 @@ div.dropdown-wrapper-line2 {
 
 .slider-label svg {
     width: 750px;
-    height: 35px;
+    height: 30px;
 }
 
 .slider-label svg text {
@@ -362,7 +311,7 @@ div.dropdown-wrapper-line2 {
 .slider-wrap {
     display: inline-block;
     margin-left: 50px;
-    margin-top: 10px;
+    margin-top: 5px;
 }
 
 
@@ -372,11 +321,12 @@ div.tooltip {
     position: absolute;
     text-align: center;
     min-width: 60px;
-    height: 28px;
+    height: auto;
     padding: 2px;
-    background: white;
-    stroke: gray;
-    border-radius: 8px;
+    background: rgb(231, 231, 231);
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 12px;
     pointer-events: none;
 }
 
