@@ -73,19 +73,6 @@ class LinePlot {
             .attr("id","y-axis-line");
         plot.append("text").classed("axis-label-y-line",true);
         
-
-        /* Below is the setup for the dropdown menu- no need to change this */
-        let dropdownWrap = d3.select('#line-chart-view').append('div').classed('dropdown-wrapper-line', true);
-        
-        let yWrap = dropdownWrap.append('div').classed('dropdown-panel', true);
-
-        yWrap.append('div').classed('y-label', true)
-            .append('text')
-            .text('Y Axis Data:  ');
-        yWrap.append('div').classed('y-label', true)
-            .attr('id','line1-y-label')
-            .append('text')
-            .text('Axis selection');
         this.updateplaceholder();
     }
 
