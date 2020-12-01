@@ -1,11 +1,8 @@
-/** Data structure for the data associated with an individual county. */
 
-/** Class representing the scatter plot view. */
+
+/** Class representing the line2 plot view. */
 class LinePlot2 {
 
-    /**
-     * @param updateAll a callback function used to notify other parts of the program when a year was updated
-     */
     constructor(data) {
 
         this.margin = { top: 20, right: 20, bottom: 60, left: 80 };
@@ -19,15 +16,12 @@ class LinePlot2 {
     }
 
     /**
-     * Sets up the plot, axes, and slider,
+     * Sets up the plot, axes,
      */
 
     drawPlot(viewer) {
         let that = this;
         
-        // if(this.countyname.length <1){
-        //     d3.select('#placeholder2').classed('hidden',false);
-        // }
         d3.select('#line2')
             .append('div').attr('id', 'line-chart-view2');
 
@@ -35,15 +29,6 @@ class LinePlot2 {
             .append('svg').classed('plot-svg', true)
             .attr("width", this.width + this.margin.left + this.margin.right)
             .attr("height", this.height + this.margin.top + this.margin.bottom);
-
-        // d3.select('#placeholder2')
-        //     .append('svg').classed('placeholder1svg', true)
-        //     .attr("width", this.width + this.margin.left + this.margin.right)
-        //     .attr("height", this.height + this.margin.top + this.margin.bottom)
-        //     .append('text')
-        //     .text("Select a county on the map to start")
-        //     .style('fill', 'red')
-        //     .attr("transform", "translate("+(this.margin.left+30)+","+(this.height-100)+")");
 
         let svgGroup = d3.select('#line-chart-view2').select('.plot-svg').append('g').classed('line-wrapper-group2', true).attr("transform", "translate("+this.margin.left+","+this.margin.top+")");
 
@@ -83,10 +68,7 @@ class LinePlot2 {
         
         
         let yMax = 0;
-        let colorMax = 0;
         let yMin = 100000;
-        let colorMin = yMin;
-        this.regions = {}
         let lineData = {};
         let countyname = [];
         for (let state of this.data.states){
@@ -107,12 +89,7 @@ class LinePlot2 {
                         yMax = +county[i][yIndicator];
                     if (+county[i][yIndicator] < yMin)
                         yMin = +county[i][yIndicator];
-                    let slope = +county[i][yIndicator];
-                    if (slope > colorMax && i == activeYear)
-                        colorMax = slope;
-                    if (slope < colorMin && i == activeYear)
-                        colorMin = slope;
-                }
+                    }
 
                 let dataPoint = new DataPointLine(county.name, valy, countyID);
                 this.data.plotDataLine[state+(+countyID)] = dataPoint;
@@ -145,10 +122,8 @@ class LinePlot2 {
         let lineGen = d3.line()
                 .x(d => xScale(d.year))
                 .y(d => yScale(d.value));
-        // Data are categories (each line that is drawn), serves as key to lineData[key] for lineGen
-
-        //color list reference: https://jnnnnn.blogspot.com/2017/02/distinct-colours-2.html
-        this.linecolorScale = d3.scaleOrdinal().domain(this.countyname).range(d3.schemeTableau10);
+        
+        this.linecolorScale = d3.scaleOrdinal().domain(this.countyname).range(['#00ff00','#87CEEB', '#4000ff','#ff0080','#DAA520']);
         console.log(this.countyname);
         let lineGroup = d3.select('#lines2').selectAll('path').data(this.countyname);
         console.log(lineGroup);
@@ -167,9 +142,5 @@ class LinePlot2 {
         d3.select('#line2-y-label').text(this.data.labels[yIndicator]);
        
     }
-
-    
-
-
 
 }

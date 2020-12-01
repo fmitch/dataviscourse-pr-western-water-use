@@ -308,33 +308,29 @@ class Mapsmall {
     
     }
     drawLegend() {
-         var that = this;
+        var that = this;
         d3.select('#map-legend').selectAll('svg').remove();
         let legendsvg = d3.select('#map-legend')
-            .append('svg').classed('plot-svg-map-legend', true)
-            .attr("width", 150)
-            .attr("height", 100);
+                            .append('svg')
+                            .classed('plot-svg-map-legend', true)
+                            .attr("width", 150)
+                            .attr("height", 100);
         var mapLegend = d3.select('.plot-svg-map-legend')
-            .selectAll(".mapLegend")
-            .data(['Available Data','Selection'])
-            .enter()
-            .append("g")
-            .attr("transform", function (d,i) {
-                    return "translate(" + 0 + "," + (40 + i*20)+")";
-                });
+                            .selectAll(".unknownmap")   //somehow helps to build all objects. Same happened in HW questions so tried it here. Passing something which is not there returns none or somethings.
+                            .data(['Data Available','Selection'])
+                            .enter()
+                            .append("g")
+                            .attr("transform", (d,i) => "translate(" + 0 + "," + (40 + i*21)+")");
+        //created a group and now adding one rect for each data object and one text for each data object.
         mapLegend.append("rect")
-            .attr("fill", function (d, i) {
-                if(d == 'Available Data'){
-                    return 'rgba(255, 99, 71, 0.5)';
-                }
-                return '#00FFFF';
-            })
-            .attr("width", 12)
-            .attr("height", 12)
-            .attr('opacity', 1);
+                    .attr("width", 12)
+                    .attr("height", 12)
+                    .attr("fill", d => d == 'Data Available'? 'rgba(255, 99, 71, 0.5)':'#00FFFF')
+                    .attr('opacity', 1);
 
-        mapLegend.append("text").text(function (d) {return d;})
-            .attr("transform", "translate(17,11)"); //align texts with boxes
+        mapLegend.append("text")
+                    .text(d => d)
+                    .attr("transform", "translate(17,11)"); //align texts with boxes
         }
 
 

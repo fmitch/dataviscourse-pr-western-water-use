@@ -15,7 +15,11 @@
     grid-column: 3;
     grid-row: 1;
   }
-  
+
+  #info-text {
+    grid-column: 2;
+    grid-row: 1;
+  } 
   /*
   #map-buttons {
     grid-column: 1;
@@ -65,6 +69,11 @@
   #line2 {
     grid-column: 2;
     grid-row: 4;
+  }
+
+#placeholder3 {
+    grid-column: 3;
+    grid-row: 2;
   }
 
   #poi-legend {

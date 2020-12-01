@@ -402,3 +402,11 @@ div.tooltip {
 #placeholder1 text{
     font-size: large;
 }
+
+#info-text{
+    font-size: small;
+    margin-bottom: 10px;
+    margin-right: 10px;
+    margin-left: 10px;
+
+}

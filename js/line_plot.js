@@ -11,7 +11,7 @@ class DataPointLine {
         this.yVal = yVal;
         // this.yVal = yVal;
         this.id = id;
-        this.colorclick = false;
+        // this.colorclick = false;
     }
 }
 
@@ -126,12 +126,9 @@ class LinePlot {
         }
         
         let yMax = 0;
-        let colorMax = 0;
         let yMin = 100000;
-        let colorMin = yMin;
         this.regions = {}
         let lineData = {};
-        // let countyname = [];
         for (let state of this.data.states){
             for (let countyID in this.data[state]){
                 let county = this.data[state][countyID];
@@ -153,11 +150,6 @@ class LinePlot {
                         yMax = +county[i][yIndicator];
                     if (+county[i][yIndicator] < yMin)
                         yMin = +county[i][yIndicator];
-                    let slope = +county[i][yIndicator];
-                    if (slope > colorMax && i == activeYear)
-                        colorMax = slope;
-                    if (slope < colorMin && i == activeYear)
-                        colorMin = slope;
                 }
 
                 let dataPoint = new DataPointLine(county.name, valy, countyID);
@@ -171,9 +163,6 @@ class LinePlot {
 
         let xScale = d3.scaleLinear().range([0,this.width]).domain([xMin,xMax]).nice();
         let xAxis = d3.select("#x-axis-line").call(d3.axisBottom(xScale).tickValues(this.data.settings.years).tickFormat(d3.format('.4')));
-        
-
-
 
         let yScale = d3.scaleLinear().range([0,this.height]).domain([yMax,0]).nice();
 
@@ -191,24 +180,22 @@ class LinePlot {
                 .x(d => xScale(d.year))
                 .y(d => yScale(d.value));
         
-        this.linecolorScale = d3.scaleOrdinal().domain(this.countyname).range(d3.schemeTableau10);
+        this.linecolorScale = d3.scaleOrdinal().domain(this.countyname).range(['#00ff00','#87CEEB', '#4000ff','#ff0080','#DAA520']);
         console.log(this.countyname);
         let lineGroup = d3.select('#lines').selectAll('path').data(this.countyname);
         console.log(lineGroup);
         lineGroup.join('path')
-        .attr("fill",'none')
-      .attr("stroke", d => this.linecolorScale(d))
-      .attr("stroke-width", 1)
-            .classed('line-path', true)
-            .attr('opacity', 0.8)
-            .attr('d', d => {
+                .attr("fill",'none')
+                .attr("stroke", d => this.linecolorScale(d))
+                .attr("stroke-width", 1)
+                .classed('line-path', true)
+                .attr('opacity', 0.8)
+                .attr('d', d => {
                 return lineGen(lineData[d]) })
-            .append("svg:title")
-          .text(function(d, i) { return d; })
-            .transition()
-            .duration(this.data.transitionDuration);
-        lineGroup.exit().remove();
+                .append("svg:title")
+                .text(function(d, i) { return d; });
 
+        lineGroup.exit().remove();
         d3.select('#line1-y-label').text(this.data.labels[yIndicator]);
         this.drawLegend();
         this.updateplaceholder();
@@ -220,25 +207,25 @@ class LinePlot {
          var that = this;
         d3.select('#line-legend').selectAll('svg').remove();
         let legendsvg = d3.select('#line-legend')
-            .append('svg').classed('plot-svg-line-legend', true)
-            .attr("width", this.margin.left + this.width)
-            .attr("height", 300 + this.margin.top + this.margin.bottom);
+                        .append('svg')
+                        .classed('plot-svg-line-legend', true)
+                        .attr("width", this.margin.left + this.width)
+                        .attr("height", 300 + this.margin.top + this.margin.bottom);
         var lineLegend = d3.select('.plot-svg-line-legend')
-            .selectAll(".lineLegend")
-            .data(this.countyname)
-            .enter()
-            .append("g")
-            .attr("transform", function (d,i) {
-                    return "translate(" + (that.width - 50) + "," + (10 + i*20)+")";
-                });
+                            .selectAll(".unknownlineclass")  //somehow helps to build all objects. Same happened in HW questions so tried it here. Passing something which is not there returns none or somethings.
+                            .data(this.countyname)
+                            .enter()
+                            .append("g")
+                            .attr("transform", (d,i) =>"translate(" + (that.width - 50) + "," + (10 + i*21)+")");
         lineLegend.append("rect")
-            .attr("fill", function (d, i) {return that.linecolorScale(d); })
-            .attr("width", 12)
-            .attr("height", 12)
-            .attr('opacity', 1);
+                    .attr("width", 12)
+                    .attr("height", 12)
+                    .attr("fill", d => that.linecolorScale(d))
+                    .attr('opacity', 1);
 
-        lineLegend.append("text").text(function (d) {return d;})
-            .attr("transform", "translate(17,11)"); //align texts with boxes
+        lineLegend.append("text")
+                    .text(d => d)
+                    .attr("transform", "translate(17,11)"); //align texts with boxes
         }
 
 
