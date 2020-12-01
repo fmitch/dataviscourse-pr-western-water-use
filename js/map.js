@@ -218,6 +218,7 @@ class Mapsmall {
 
     drawMap(world) {
         var that = this;
+        that.drawLegend();
         var data = topojson.feature(world, world.objects.states).features;
         // console.log(data);
         // console.log(this.data2);
@@ -238,37 +239,96 @@ class Mapsmall {
             .attr('d', path)
     .attr("fill-opacity", 1)
     .attr("class", function(d){
-                if(that.data2.states.indexOf(String(d.properties.name.toLowerCase())) == -1 ){
-                    return 'ussmalldefault'
+                let cssclass = '';
+                let state = String(d.properties.name.toLowerCase());
+                if(that.data2.allStates.indexOf(state) == -1 ){
+                    cssclass = 'ussmalldefault';
+                    return cssclass;
                 }
-                return 'ussmallcolor'
+                if(that.data2.states.indexOf(state) !== -1 ){
+                    cssclass = 'ussmallcolor';
+                    return cssclass;
+                }
+                return 'allstates';
             })
     .attr("stroke", "black")
-    .attr("id",d => 'smallmap_'+d.properties.name.toLowerCase())
+    .attr("id",function(d) {
+        let state = d.properties.name.toLowerCase();
+        let name = state.split(" ");
+        if(name.length>1){
+            state = name.join("_");
+        }
+        return 'smallmap_'+state;
+            })
     .on("click", d => {
                     let state = String(d.properties.name.toLowerCase());
-                        console.log(d3.select('#smallmap_'+'new mexico'));
-
-                    if (that.data2.states.includes(state)){
-                        let index = that.data2.states.indexOf(state);
-                        that.data2.states.splice(index, 1);
-                        d3.select('#smallmap_'+state).attr('class','ussmalldefault');
+                    if(that.data2.allStates.indexOf(state) == -1 ){
+                        alert('Data is not available for '+state+". Please select another state.");
                     }
                     else{
-                        if(that.data2.states.length >= 2){
-                            alert("Only 2 States can be selected");
+                        let state2 = String(d.properties.name.toLowerCase());
+                        let name = state.split(" ");
+                        if(name.length>1){
+                            state2 = name.join("_");
+                        }
+                            console.log(d3.select('#smallmap_'+'new mexico'));
+
+                        if (that.data2.states.includes(state)){
+                            let index = that.data2.states.indexOf(state);
+                            that.data2.states.splice(index, 1);
+                        let cssc = 'ussmalldefault';
+                        if(that.data2.allStates.indexOf(state) !== -1 ){
+                            cssc = 'allstates';
+                        }
+                            d3.select('#smallmap_'+state2).attr('class',cssc);
                         }
                         else{
-                           that.data2.states.push(state);
-                           d3.select('#smallmap_'+state).attr('class','ussmallcolor');   
+                            if(that.data2.states.length >= 2){
+                                alert("Only 2 States can be selected");
+                            }
+                            else{
+                               that.data2.states.push(state);
+                               d3.select('#smallmap_'+state2).attr('class','ussmallcolor');   
+                            }
                         }
+                        that.drawLegend();
+                        // that.redrawMap();
+                        that.updateAll();
                     }
-                    that.redrawMap();
-                    that.updateAll();
                 })
     .append("svg:title")
     .text(function(d, i) { return d.properties.name; });
-
+    
     }
+    drawLegend() {
+         var that = this;
+        d3.select('#map-legend').selectAll('svg').remove();
+        let legendsvg = d3.select('#map-legend')
+            .append('svg').classed('plot-svg-map-legend', true)
+            .attr("width", 150)
+            .attr("height", 100);
+        var mapLegend = d3.select('.plot-svg-map-legend')
+            .selectAll(".mapLegend")
+            .data(['Available Data','Selection'])
+            .enter()
+            .append("g")
+            .attr("transform", function (d,i) {
+                    return "translate(" + 0 + "," + (40 + i*20)+")";
+                });
+        mapLegend.append("rect")
+            .attr("fill", function (d, i) {
+                if(d == 'Available Data'){
+                    return 'rgba(255, 99, 71, 0.5)';
+                }
+                return '#00FFFF';
+            })
+            .attr("width", 12)
+            .attr("height", 12)
+            .attr('opacity', 1);
+
+        mapLegend.append("text").text(function (d) {return d;})
+            .attr("transform", "translate(17,11)"); //align texts with boxes
+        }
+
 
 }

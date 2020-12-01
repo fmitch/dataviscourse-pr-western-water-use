@@ -42,22 +42,48 @@ class LinePlot {
             .attr("width", this.width + this.margin.left + this.margin.right)
             .attr("height", this.height + this.margin.top + this.margin.bottom);
 
-        d3.select('#placeholder1')
+        let placeholdersvg1 = d3.select('#placeholder1')
             .append('svg').classed('placeholder1svg', true)
             .attr("width", this.width + this.margin.left + this.margin.right)
-            .attr("height", this.height + this.margin.top + this.margin.bottom)
-            .append('text')
-            .text("Select a county on the map to start")
+            .attr("height", this.height + this.margin.top + this.margin.bottom);
+            
+            placeholdersvg1.append('text')
+            .attr("dy", "0em")
+            .text("Select a county on the map to start.")
             .style('fill', 'red')
             .attr("transform", "translate("+(this.margin.left+30)+","+(this.height-100)+")");
-        d3.select('#placeholder2')
+            placeholdersvg1.append('text')
+             .attr("dy", "1em")
+            .text("This plot represents the trend over time")
+            .style('fill', 'red')
+            .attr("transform", "translate("+(this.margin.left+30)+","+(this.height-100)+")");
+            placeholdersvg1.append('text')
+             .attr("dy", "2em")
+            .text("for the Y-axis of Scatter Plot.")
+            .style('fill', 'red')
+            .attr("transform", "translate("+(this.margin.left+30)+","+(this.height-100)+")");
+
+        let placeholdersvg2 = d3.select('#placeholder2')
             .append('svg').classed('placeholder1svg', true)
             .attr("width", this.width + this.margin.left + this.margin.right)
-            .attr("height", this.height + this.margin.top + this.margin.bottom)
-            .append('text')
-            .text("Select a county on the map to start")
+            .attr("height", this.height + this.margin.top + this.margin.bottom);
+            
+            placeholdersvg2.append('text')
+            .attr("dy", "0em")
+            .text("Select a county on the map to start.")
             .style('fill', 'red')
             .attr("transform", "translate("+(this.margin.left+30)+","+(this.height-100)+")");
+            placeholdersvg2.append('text')
+             .attr("dy", "1em")
+            .text("This plot represents the trend over time")
+            .style('fill', 'red')
+            .attr("transform", "translate("+(this.margin.left+30)+","+(this.height-100)+")");
+            placeholdersvg2.append('text')
+             .attr("dy", "2em")
+            .text("for the X-axis of Scatter Plot.")
+            .style('fill', 'red')
+            .attr("transform", "translate("+(this.margin.left+30)+","+(this.height-100)+")");
+
 
         let svgGroup = d3.select('#line-chart-view').select('.plot-svg').append('g').classed('line-wrapper-group', true).attr("transform", "translate("+this.margin.left+","+this.margin.top+")");
 
@@ -91,7 +117,7 @@ class LinePlot {
         for (let x of this.data.settings.selectedCounties){
             for (let state of this.data.states){
                 for (let countyID in this.data[state]){
-                    if(x == 'utah'+String(countyID)){
+                    if(x == state+String(countyID)){
                         let county = this.data[state][countyID];
                         this.countyname.push(county.name);
                     }
@@ -109,7 +135,7 @@ class LinePlot {
         for (let state of this.data.states){
             for (let countyID in this.data[state]){
                 let county = this.data[state][countyID];
-                if(this.data.settings.selectedCounties.indexOf('utah'+String(countyID)) == -1 ){
+                if(this.data.settings.selectedCounties.indexOf(state+String(countyID)) == -1 ){
                     continue;
                 }
                 let valy = [];
@@ -174,7 +200,7 @@ class LinePlot {
       .attr("stroke", d => this.linecolorScale(d))
       .attr("stroke-width", 1)
             .classed('line-path', true)
-            // .attr('stroke', d => this.colorScale(d))
+            .attr('opacity', 0.8)
             .attr('d', d => {
                 return lineGen(lineData[d]) })
             .append("svg:title")
@@ -192,7 +218,7 @@ class LinePlot {
     
     drawLegend() {
          var that = this;
-         d3.select('#line-legend').selectAll('svg').remove();
+        d3.select('#line-legend').selectAll('svg').remove();
         let legendsvg = d3.select('#line-legend')
             .append('svg').classed('plot-svg-line-legend', true)
             .attr("width", this.margin.left + this.width)
@@ -208,7 +234,8 @@ class LinePlot {
         lineLegend.append("rect")
             .attr("fill", function (d, i) {return that.linecolorScale(d); })
             .attr("width", 12)
-            .attr("height", 12);
+            .attr("height", 12)
+            .attr('opacity', 1);
 
         lineLegend.append("text").text(function (d) {return d;})
             .attr("transform", "translate(17,11)"); //align texts with boxes

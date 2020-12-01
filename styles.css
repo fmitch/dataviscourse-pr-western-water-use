@@ -387,6 +387,9 @@ div.tooltip {
     margin: 0;
 }
 
+.allstates{
+    fill: rgba(255, 99, 71, 0.5);
+}
 .ussmallcolor{
      fill: #00FFFF;
 }

@@ -27,6 +27,10 @@
     grid-column: 1;
     grid-row: 3;
   }
+  #map-legend{
+    grid-column: 4;
+    grid-row: 1;
+  }
   
   #scatter-plot {
     grid-column: 2;

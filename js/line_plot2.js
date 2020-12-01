@@ -73,7 +73,7 @@ class LinePlot2 {
         for (let x of this.data.settings.selectedCounties){
             for (let state of this.data.states){
                 for (let countyID in this.data[state]){
-                    if(x == 'utah'+String(countyID)){
+                    if(x == state+String(countyID)){
                         let county = this.data[state][countyID];
                         this.countyname.push(county.name);
                     }
@@ -92,7 +92,7 @@ class LinePlot2 {
         for (let state of this.data.states){
             for (let countyID in this.data[state]){
                 let county = this.data[state][countyID];
-                if(this.data.settings.selectedCounties.indexOf('utah'+String(countyID)) == -1 ){
+                if(this.data.settings.selectedCounties.indexOf(state+String(countyID)) == -1 ){
                     continue;
                 }
                 let valy = [];
@@ -154,16 +154,14 @@ class LinePlot2 {
         console.log(lineGroup);
         lineGroup.join('path')
         .attr("fill",'none')
-      .attr("stroke", d => this.linecolorScale(d))
-      .attr("stroke-width", 1)
+          .attr("stroke", d => this.linecolorScale(d))
+          .attr("stroke-width", 1)
+          .attr('opacity', 0.8)
             .classed('line-path', true)
-            // .attr('stroke', d => this.colorScale(d))
             .attr('d', d => {
                 return lineGen(lineData[d]) })
             .append("svg:title")
           .text(function(d, i) { return d; })
-            .transition()
-            .duration(this.data.transitionDuration);
         lineGroup.exit().remove();
 
         d3.select('#line2-y-label').text(this.data.labels[yIndicator]);
