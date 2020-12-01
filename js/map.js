@@ -60,6 +60,11 @@ class CountyMap {
 
         let geoJSON = {features: [], type:'FeatureCollection'};
         let stateCodes = {}
+
+        console.log(this.data.states)
+        console.log(this.data.settings.focusCounty)
+        console.log(this.data.settings.selectedCounties)
+
         for (let state of this.data.states){
             geoJSON.features = geoJSON.features.concat(divided_geoJSON[state].features);
             stateCodes[+divided_geoJSON[state].features[0].properties.STATE] = state;
@@ -129,6 +134,8 @@ class CountyMap {
                 that.autoSelector.autoSelect();
                 that.updateAll();
             });
+        this.autoSelector.autoSelect();
+        this.updateHighlightClick();
         this.updateMap();
     }
 
@@ -292,7 +299,7 @@ class Mapsmall {
                             }
                         }
                         that.drawLegend();
-                        // that.redrawMap();
+                        that.redrawMap();
                         that.updateAll();
                     }
                 })
