@@ -33,10 +33,11 @@ class CountyMap {
     }
 
     getTooltipInfo(state, county) {
-        let html = `<h2>${this.data[state][county].name} County</h2>` +  
-            `<h2>Population: ${this.data[state][county][this.data.settings.activeYear].population*1000} </h2>` +  
-            `<h2>Annual Precipitation: ${this.data[state][county][this.data.settings.activeYear].precip} inches </h2>` +
-            `<h2>Average Temperature: ${this.data[state][county][this.data.settings.activeYear].temp} F </h2>`
+        let html = `<h1>${this.data[state][county].name} County</h1>` +  
+            `<h2>Public gallons per capita: ${Math.round(this.data[state][county][this.data.settings.activeYear].domestic_commercial_supply/this.data[state][county][this.data.settings.activeYear].population*1000)} </h2>` +  
+            `<h3>Population: ${this.data[state][county][this.data.settings.activeYear].population*1000} </h3>` +  
+            `<h3>Annual Precipitation: ${this.data[state][county][this.data.settings.activeYear].precip} inches </h3>` +
+            `<h3>Average Temperature: ${this.data[state][county][this.data.settings.activeYear].temp} F </h3>`
         return html
     }
 

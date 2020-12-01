@@ -44,9 +44,6 @@ class ScatterPlot {
     drawPlot() {
         d3.select('#color-legend')
             .append('svg').attr('id', 'color-legend-svg');
-        d3.select('#color-legend-svg').append('g')
-            .attr('class', 'legendSequential')
-            .attr('transform', 'translate(20,20)');
         d3.select('#scatter-plot')
             .append('div').attr('id', 'chart-view');
         d3.select('#scatter-plot')
@@ -109,10 +106,11 @@ class ScatterPlot {
         let colorMax = 0;
         let xIndicator = this.data.settings.dropOptions[categoryIndicator].x;
         let yIndicator = this.data.settings.dropOptions[categoryIndicator].y;
-        let colorIndicator = 'total_water';
+        let colorIndicator1 = 'domestic_commercial_supply';
+        let colorIndicator2 = 'population';
         let xMin = this.data[state][Object.keys(this.data[state])[0]][activeYear][xIndicator];
         let yMin = this.data[state][Object.keys(this.data[state])[0]][activeYear][yIndicator];
-        let colorMin = this.data[state][Object.keys(this.data[state])[0]][activeYear][colorIndicator];
+        let colorMin = this.data[state][Object.keys(this.data[state])[0]][activeYear][colorIndicator1]*1000/this.data[state][Object.keys(this.data[state])[0]][activeYear][colorIndicator2];
 
         for (let state of this.data.states){
             for (let countyID in this.data[state]){
@@ -127,10 +125,10 @@ class ScatterPlot {
                     if (+county[i][yIndicator] < yMin)
                         yMin = +county[i][yIndicator];
                 }
-                colorMax = Math.max(+county[activeYear][colorIndicator], colorMax);
-                colorMin = Math.min(+county[activeYear][colorIndicator], colorMin);
+                colorMax = Math.max(county[activeYear][colorIndicator1]/county[activeYear][colorIndicator2]*1000, colorMax);
+                colorMin = Math.min(county[activeYear][colorIndicator1]/county[activeYear][colorIndicator2]*1000, colorMin);
 
-                let dataPoint = new DataPoint(county.name, county[activeYear][xIndicator], county[activeYear][yIndicator], countyID,  county[activeYear][colorIndicator], state);
+                let dataPoint = new DataPoint(county.name, county[activeYear][xIndicator], county[activeYear][yIndicator], countyID,  county[activeYear][colorIndicator1]/county[activeYear][colorIndicator2]*1000, state);
                 this.data.plotData[state+(+countyID)] = dataPoint;
             }
         }
@@ -150,11 +148,15 @@ class ScatterPlot {
             .style("text-anchor", "middle")
             .attr("transform", "translate(-35,"+(this.height/2)+") rotate(-90)");
         let yAxis = d3.select("#y-axis").call(d3.axisLeft(yScale));
-        let colorScale = d3.scaleSequential().domain([10, 500])
-            .interpolator(d3.interpolateBlues);
+        let colorScale = d3.scaleSequential().domain([Math.round(colorMin), Math.round(colorMax)])
+            .interpolator(d3.interpolateBlues)
         this.data.colorScale = colorScale;
 
         let legendSvg = d3.select('#color-legend-svg');
+        legendSvg.select('.legendSequential').remove();
+        legendSvg.append('g')
+            .attr('class', 'legendSequential')
+            .attr('transform', 'translate(20,20)');
         legendSvg.attr('width', this.width + this.margin.left)
             .attr('height', 50)
         let cellWidth = 3;
@@ -167,7 +169,7 @@ class ScatterPlot {
             .shapePadding(-0.5)
             .labelOffset(4)
             .orient('horizontal')
-            .title('Total Water Usage, Mgal/day')
+            .title('Public Water Usage, gallons per capita')
             .labels('')
             .scale(colorScale);
         legendSvg.select('.legendSequential')

@@ -334,9 +334,19 @@ div.tooltip {
     pointer-events: none;
 }
 
+.tooltip h1 {
+    margin: auto;
+    font: 18px sans-serif;
+}
+
 .tooltip h2 {
     margin: auto;
     font: 14px sans-serif;
+}
+
+.tooltip h3 {
+    margin: auto;
+    font: 10px sans-serif;
 }
 
 

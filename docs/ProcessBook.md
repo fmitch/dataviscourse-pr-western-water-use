@@ -7,9 +7,8 @@
 
 ## Overview and Motivation
 The purspose of this project is to effectively display data on water usage in the Utah and other areas of the Western United States. Temperature, precipitation, and water usage data is available for each county over time, providing perspective for past water usage and how usage has been affected by other factors. 
-<!--- provide details on what final groupings and info we highlight --->
 
-There is publicly available data on water usage for each state from the USGS. However this data is an overwhelming amount of information with no visual statistics or tools for interpretation. This data is difficult to read by people, since there are many complex factors such as different categories of water use, as well as different water needs in different climates. Visualizing water consumption against other variables can provide us insights into an area's condition. In addition, the USGS data does not provide any context or information about reckless water use in some of the nations driest areas.
+There is publicly available data on water usage for each state from the USGS. However this data is an overwhelming amount of information with no visual statistics or tools for interpretation. This data is difficult for the public to read and interpret, since there are many complex factors such as different categories of water use, as well as different water needs in different climates. Visualizing water consumption against other variables can provide us insights into an area's condition. In addition, the USGS data does not provide any context or information about reckless water use in some of the nations driest areas.
 
 Water is an essential resource that keeps depleting, and hence, it needs to be analyzed by not just the government but also the local people. Knowing how much water is consumed every year in one area and comparing it with other data such as precipitation, population, and agricultural or industrial output can help devise a solution to various water usage problems. For example, comparing water usage with temperature can help us know how global warming affects per capita water consumption. By knowing and understanding the data carefully, we can allocate resources and change policy to prevent a water crisis. Therefore, this project's motivation is to spread information in a visual form that is readable and understandable by the general public.
 
@@ -63,71 +62,74 @@ Intially, we used the USGS tabluar visualization to explore our Data. This helpe
 
 We were able to draw a few insights such as total water consumption and it's different categories. This was sufficient to start working on creating designs for visuals. Based on availability of data in each category, we filtered the data and then designed visuals accordingly.
 
-<!--- provide details on How our visualization has changed as we made discoveries in the data --->
+Due to the complex nature of the data, preliminary visualization of results was very difficult. As the design evolved we used different visualizations to highlight important data rather than allowing the user to arbitrarily select any of the many variables included in the data. This resulted in a cleaner, more understandable user experience.
 
 ## Design Evolution
 
-Design starts with a home page which displays the map of the western US, and a scatter plot (Optional feature) which displays water use, temperature and precipitation data for every state.
-Selecting any state on the map will open a new page to show detailed analysis of the state. At present, we are just processing and displaying data for Utah. Other states will be added later during the course of the project.
+At the start of our proposal, we had the following planned: A home page would display a map of the wester US, and from there you would be able to select a state to provide a more detailed view, shown below. This detailed view would have 3 main components: 
+* Main view:
+  * A map and scatterplot with dropdown menus to select the $x$ and $y$ axis variables
+  * Counties in the map and scatterplot would be colored by the $y/x$ value of each point
+  * A slider could be used to select different years
+* Point-of-Interest View
+  * A single county could be highlighted to show water usage broken into several categories, with a bar chart comparing different counties, and a line chart showing the change in water categories over time
+* Time View
+  * Line charts showing the $x$ and $y$ variables from the scatterplot dropdowns, as they change over time.
 
-In the state-specific page, data is displayed in 3 main views, all of which include multiple plots. A scatterplot with changeable axis data (including precipitation, temperature, total water use, and water use by category) is on the right, with a map of counties in Utah on the left, colored by the Y/X data from the scatterplot. A slider can be used to select the year.
+![Design 3](images/Design3.png) 
 
-In the time view, the data from the X-axis and Y-axis are plotted over time in two separate line plots. Here, the Y-axis is changable and X-axis is Time. In the focus view, a single county can be set as the point-of-focus, which shows the change in water use categories over time.
+As we worked on our first draft of this design, we found we needed to discard several of our design elements. For example, we thought a table of buttons was useful since there could many counties that the user wouldn't be able to find on the map. However, we realized the buttons were unnecessary if we simply labeled each county on the map, since selection could be easily made there. We also saw that a map of the US would not be necessary if viewing a single state.
 
-The scatter and time view plot data for all counties for a selected state. The focus-view plots data for a selected county on the map. Every view is synchronized, making a selection on one view will highlight the selection on other views. 
+We produced an initial draft of this design, with just data from Utah available:
 
-Instead of providing a table of buttons, we have implemented a double-click and single-click feature on the county map. Double-click helps to select point-of-interest and single clicks select the states that need to be compared. This comparison is highlighted in every view and an additional view is displayed which shows a stacked barchart of water use categories for every selected county.
+![Milestone Screenshot](images/milestone.png) 
 
-Color can be used in several ways. First, to distinguish between data points on the map (counties) and to provide some context for the plotted data (Y/X). Separate colors are also used to distinguish between each category of water use.
+#### Improving User Experience
 
-Having these three views allows the visualization to be flexible. A user can compare different variables in the scatter plot, as well as view how those variables have changed over time in the time view. The focus view can be used to compare different counties, or how one particular county's water use has changed. 
+After some feedback from the peer review session and our milestone meeting with the TA, we made some major adjustments. With so many water categories,
+the line chart on the bottom row was quickly becoming unreadable. As well, the number of lines in the longitudinal chart on the right was infeasible, even if we were to highlight the selected counties. A general issue was that each view had many complex parts which were difficult for a user to understand. Instead of providing a highly customizable visualization, instead make a simple visualization with a few interesting options.
+
+A major shift in the project occurred as we removed some of the extensive customization available to the user and replaced the options with simpler selections that would be more straightforward for a new user. We combined some of the water categories, and changed the line chart to only show the currently selected counties (up to 5). We removed the ability for the user to select any variable for the $x$ and $y$ axes and changed to a single dropdown with a few preset variables to compare:
+* Public Water Usage vs. Population
+* Total Water Usage vs. Population
+* Total Water Usage vs. Annual Temperature 
+* Irrigation per acre vs. Annual Temperature
+* Irrigation per acre vs. Annual Precipitation 
+
+These categories were selected because they could potentially highlight counties that have unusual behavior in terms of water usage and irrigation. For example, this showed that although Morgan and Summit counties have similar precipitation, Morgan County irrigates at more than double the rate of Summit County.
+
+![Irrigation Screenshot](images/morgan_irrigate.png) 
+
+Rather than basing the color of the counties on the variables of the scatterplot, we opted to have a single color scale which is consistent with different display selections, in order to prevent confusion by colors changing.
+
+We also included an auto-select feature. This is probably the most useful feature we added, which was based on feedback during the peer review. By auto-selecting counties that are most similar based on population and climate, users can compare relevant counties quickly.
+
+### Visualization Aspects
+Here we highlight some of the different pieces of the visualization.
+
+#### US Map
+We decided not to include a landing page with a US map, and reincorporated our early design idea of a small US map in the top corner. This actually allows the user to select multiple states (in the Western US). On the initial loading, Utah is selected by default, and no counties are selected.
+
+![Semi-Final Screenshot](images/semi-final-no-selection.png) 
+
+#### Focus View
+A county can be focus-selected by a right-click, which runs auto-selection on the focus county as well as opening the focus view charts in the right column. 
+
+The auto-selection finds the four most similar counties to the selection using the following (completely arbitrary) distance metric:
+$$D(a,b) = \sqrt{ (\frac{a_{pop} - b_{pop}}{100,000})^2 + (a_{precip} - b_{precip})^2 +  (a_{temp} - b_{temp})^2 } $$
+The difference between the hottest and coolest counties in Utah was around 10 degrees F, and the difference in precipitation was also about 10 inches. The variation in population was much greater, from 2,000 to 1.1 million. This means that each unit included in the metric (population, precipitation, and temperature) is weighted equally (roughly). On the map and scatterplot, the focus county is shown with a thick red border and a black border for the other selected counties.
+
+The focus view charts are:
+* A line chart showing water usage in categories, changing over time.
+* A relative bar chart showing water usage in different categories. Rather than just showing water usage as a percentage, we also used the height of the bar chart to indicate the actual volume of water used. This value is also indicated on the right side as a label. The bar chart also includes a tooltip showing the actual water usage in each category.
+
+![Semi-Final Screenshot](images/focus-tooltip.png) 
+
+#### Multi-state Selection
+
+Last of all, we added multi-state selection to the US map in the top corner. Since this selection could cover a large area, the text labels on the map were removed, but auto-selection applies to counties from both states, allowing for some interesting comparisons such as the St. George, Tucson, and Las Vegas metro areas, which are similar in climate but very different in terms of water usage.
+
+![Semi-Final Screenshot](images/semi-final-two-states.png) 
 
 
 ## Evaluation:
-So far we were able to answer a few question with respect to water consumption and its relation with other factors such as precipitation, temperature, etc. 
-
-We are still working on creating different visuals such as additional line charts and stacked bar plots. These additional features will help understand and provide an informative visual of the data.
-
-
-* Home Page:
-  * Rather than opening new page, shrink map down to top right with selected state(s) filled with color. 
-* Frost: Grid: Shrink everything to window/3.
-* Frost: Map
-  * Set map/chart color to a constant scheme. Total Water Usage?
-  * Add tooltip with color information
-  * Legend for color
-* Frost: Scatterplot 
-  * Adjust color to match map.
-  * Rather than option for each axis, define some preset plots to view.
-    * (Public + Domestic water usage) vs Population
-    * Total Water usage vs Temperature
-    * Total Water usage vs Precipitation
-    * (Irrigation per acre) vs temp
-    * (Irrigation per acre) vs precipitation 
-    * this.data.scatterSelection.x = variable
-* Prav: Line Plots:
-  * Automatically show lines based on Scatterplot settings.
-  * Too many lines:
-    * With no selection, show some lines and hide others.
-    * With selection, show selection and hide others.
-  * Tooltip  - TBD
-  * Bring first year closer to origin
-* Frost: Focus View
-  * Hide axis for bar chart
-  * Merge water categories:
-    * Merge (Commercial, industrial, power)
-    * Merge (Industrial, power)
-    * Should I separate domestic, commerical, and industrial out of public supply and add to other categories, where the data is available? Yes.
-    * Categories:
-      * Domestic & Commercial (Including Public Supply when not separate)
-      * Industrial (Power) (Separated from Public Supply when possible)
-      * Mining 
-      * Livestock
-      * Irrigation
-  * Add a clear description to the bar height.
-* Features
-  * Prav: Info overlay tooltip
-  * Frost: Distance function to similar counties. Select 4 nearest counties to selection and show on line charts. Add toggle to auto-select similar counties.
-* Visual Style
-  * Get axis labels in a closer position
-  * Get better placement of Scatterplot slider, slider label, and drop-down
