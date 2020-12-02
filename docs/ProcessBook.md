@@ -1,5 +1,7 @@
 # Project ProcessBook
 
+
+
 **Github:** https://github.com/fmitch/dataviscourse-pr-western-water-use
 
 **Github Pages (Hosted):** https://fmitch.github.io/dataviscourse-pr-western-water-use/
@@ -118,7 +120,7 @@ Here we highlight some of the different aspects of our final visualization.
 ##### US Map
 We decided not to include a landing page with a US map, and reincorporated our early design idea of a small US map in the top corner. This actually allows the user to select multiple states (in the Western US). On the initial loading, Utah is selected by default, and no counties are selected.
 
-![Semi-Final Screenshot](images/semi-final-no-selection.png) 
+![Final Screenshot](images/final-no-selection.png) 
 <sup>Initial view of the visualization on load. The line charts and focus view do not show data until a county is selected.
 
 ##### Focus View
@@ -132,14 +134,14 @@ The focus view charts are:
 * A line chart showing water usage in categories, changing over time.
 * A relative bar chart showing water usage in different categories. Rather than just showing water usage as a percentage, we also used the height of the bar chart to indicate the actual volume of water used. This value is also indicated on the right side as a label. The bar chart also includes a tooltip showing the actual water usage in each category.
 
-![Semi-Final Screenshot](images/focus-tooltip.png) 
-<sup>Focus view. The tooltip on the bar chart shows the specific values for water usage in each category, and the height of each bar is used to show the relative usage between different counties.</sup>
+![Final Screenshot](images/focus-tooltip.png) 
+<sup>Focus view. The tooltip shows the specific category values, and the height of each bar shows the relative county usage.</sup>
 
 ##### Multi-state Selection
 
 Last of all, we added multi-state selection to the US map in the top corner. Since this selection could cover a large area, the text labels on the map were removed, but auto-selection applies to counties from both states, allowing for some interesting comparisons such as the St. George, Tucson, and Las Vegas metro areas, which are similar in climate but very different in terms of water usage.
 
-![Semi-Final Screenshot](images/semi-final-two-states.png) 
+![Final Screenshot](images/final-two-states.png) 
 <sup>Multiple states can be selected on the US map to compare counties in the different states.</sup>
 
 
@@ -150,7 +152,7 @@ All in all, this visualization was successful. Users are able to explore the spe
 One problem that was realized as we completed the visualization is that due to the complexity of the data, it seems that some counties may have errors in the existing data. For example, in 2015 Morgan County is reported as using 2,681 gallons of public, commercial, or domestic water per day. This is almost 10 times the usage of similar nearby counties, and in other years their usage is similar to nearby Weber and Davis Counties. This leads us to believe that the water usage data provided by USGS either contains errors or else is lacking much of the context required to understand what these numbers mean. 
 
 ![Morgan Error](images/morgan_error.png) 
-<sup>Note Morgan Counties unrealistic data for gallons per capita usage.</sup>
+<sup>Morgan County has unrealistic data for gallons per capita usage.</sup>
 
 #### Possible Improvements
 Water usage is a complicated problem in the western US, with lots of passionate arguments for increasing or decreasing water use, and billions of dollars going towards pipeline projects. Our visualization fails to communicate much of this nuance. For example, if a climate in southern Utah is much warmer and drier, than to maintain the same standard of living as in northern Utah, more water would be required. There may be a point at which the higher water consumption is unsustainable, but this visualization does not provide any info about this.

@@ -30,7 +30,7 @@ loadData(allStates).then(data => {
         activeYear: '2015',
         years: [1985,1990,1995,2000,2005,2010,2015],
         focusCounty: null,
-        cell: { width: 440, height: 340}
+        cell: { width: 440, height: 330}
     }
     data.allStates = allStates;
     data.settings.dropOptions = [

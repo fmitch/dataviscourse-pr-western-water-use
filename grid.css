@@ -3,7 +3,7 @@
     grid-template-columns: repeat(3, 1fr);
     row-gap: 10px;
     column-gap: 10px;
-    grid-template-rows: 200px  50px repeat(2, 1fr);
+    grid-template-rows: 190px  50px repeat(2, 1fr);
   }
   
   .header {
